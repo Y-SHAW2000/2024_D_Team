@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,26 @@ namespace Complete
         private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won.
         private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won.
 
+
+        public enum GameState //状態を表す列挙列
+        {
+            RoundStarting,  //ゲームの開始処理
+            RoundPlaying,   //ゲームのプレイ中
+            RoundEnding     //ゲームの終了処理
+        }
+
+        public GameState currentGameState; // 現在のゲーム状態を保持する変数
+
+        public event Action<GameState> OnGameStateChanged; // 状態変更時に発生するイベント
+
+        public void SetGameState(GameState newState)
+        {
+            if (currentGameState != newState)
+            {
+                currentGameState = newState;
+                OnGameStateChanged?.Invoke(newState); // 状態が変更されたらイベントを発生
+            }
+        }
 
         private void Start()
         {
@@ -97,6 +118,8 @@ namespace Complete
 
         private IEnumerator RoundStarting ()
         {
+            SetGameState(GameState.RoundStarting); //状態の更新
+
             // As soon as the round starts reset the tanks and make sure they can't move.
             ResetAllTanks ();
             DisableTankControl ();
@@ -115,8 +138,10 @@ namespace Complete
 
         private IEnumerator RoundPlaying ()
         {
+            SetGameState(GameState.RoundPlaying);//状態の更新
+
             // As soon as the round begins playing let the players control the tanks.
-            EnableTankControl ();
+            EnableTankControl();
 
             // Clear the text from the screen.
             m_MessageText.text = string.Empty;
@@ -132,6 +157,8 @@ namespace Complete
 
         private IEnumerator RoundEnding ()
         {
+            SetGameState(GameState.RoundEnding);//状態の更新
+
             // Stop tanks from moving.
             DisableTankControl ();
 
