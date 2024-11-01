@@ -5,15 +5,16 @@ using Complete;
 
 public class HudManager : MonoBehaviour
 {
-    [SerializeField] private GameObject player1StockArea; // Player1 の HUD
-    [SerializeField] private GameObject player2StockArea; // Player2 の HUD
+    [SerializeField] private PlayerStockArea player1StockArea; // Player1 の HUD
+    [SerializeField] private PlayerStockArea player2StockArea; // Player2 の HUD
     [SerializeField] private Complete.GameManager gameManager; // GameManager への参照
-
+    [SerializeField] private Complete.TankManager tankManager; //TankManagerへの参照
     private void Start()
     {
         if (gameManager != null)
         {
             gameManager.OnGameStateChanged += HandleGameStateChanged; //イベントの登録
+            tankManager.OnWeaponStockChanged += UpdatePlayerStockArea;
         }
     }
 
@@ -29,13 +30,24 @@ public class HudManager : MonoBehaviour
     {
         if (gameState == Complete.GameManager.GameState.RoundPlaying)
         {
-            player1StockArea.SetActive(true);
-            player2StockArea.SetActive(true);
+            player1StockArea.gameObject.SetActive(true);
+            player2StockArea.gameObject.SetActive(true);
         }
         else
         {
-            player1StockArea.SetActive(false);
-            player2StockArea.SetActive(false);
+            player1StockArea.gameObject.SetActive(false);
+            player2StockArea.gameObject.SetActive(false);
+        }
+    }
+    private void UpdatePlayerStockArea(int playerNumber, int newStock)  // プレイヤー番号に応じて HUD の砲弾ストック数を更新
+    {
+        if (playerNumber == 1)
+        {
+            player1StockArea.UpdatePlayerStockArea(newStock);
+        }
+        else if (playerNumber == 2)
+        {
+            player2StockArea.UpdatePlayerStockArea(newStock);
         }
     }
 }

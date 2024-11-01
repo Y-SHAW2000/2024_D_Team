@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Complete
@@ -27,7 +28,8 @@ namespace Complete
         public int MaxBullet = 50;                    // 所持可能な最大砲弾数
         public int ReroadBullet = 10;            // 補充する砲弾の数
         private int CurrentBullet;                    // 現在の砲弾数
-
+        private bool IncreasingAim;             //飛距離ゲージが伸びてるかどうか
+        public event Action<int> OnShellStockChanged; // 砲弾所持数の変化を通知するイベント
 
         private void OnEnable()
         {
@@ -47,6 +49,7 @@ namespace Complete
 
             // 弾数の初期化
             CurrentBullet = BulletStart;
+            OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
         }
 
 
@@ -99,7 +102,7 @@ namespace Complete
 
             m_Fired = true;
             CurrentBullet--;  // 弾数を減少
-
+            OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
@@ -117,14 +120,16 @@ namespace Complete
 
 
         }
+
         public void Reload()
         {
             CurrentBullet += ReroadBullet;
 
-            if (CurrentBullet > MaxBullet) 　//リロードしたときに最大弾数を超えないようにする
+            if (CurrentBullet > MaxBullet) //リロードしたときに最大弾数を超えないようにする
             {
                 CurrentBullet = MaxBullet;
             }
+            OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
         }
         private void OnCollisionEnter(Collision collision)
         {

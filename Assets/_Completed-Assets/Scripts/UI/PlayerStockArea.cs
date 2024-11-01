@@ -11,7 +11,7 @@ public class PlayerStockArea : MonoBehaviour
     [SerializeField] private Image[] Bullets;
 
     // ストック数に応じて砲弾アイコンを表示する
-    public void PlayerStockBullet(int StockCount)
+    public void UpdatePlayerStockArea(int StockCount)
     {
         // 1発アイコンの表示・非表示設定
         for (int i = 0; i < SingleBullet.Length; i++)
