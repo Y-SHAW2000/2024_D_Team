@@ -140,7 +140,6 @@ namespace Complete
             if (m_Turret != null)
             {
                 m_Turret.transform.Rotate(0f, TurretRotation, 0f); //ゲームオブジェクトを参照できるとき砲塔のy軸の角度をTurretRotation分回転させる
-                Debug.Log("Turret Rotation Applied: " + TurretRotation);
             }
         }
 

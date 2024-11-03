@@ -10,6 +10,17 @@ public class PlayerStockArea : MonoBehaviour
     // 10発分の弾の参照 (Shells10～Shells40)
     [SerializeField] private Image[] Bullets;
 
+    // 初期のストック数（インスペクターから設定）
+    [SerializeField] private int initialStockCount = 10;
+
+    private void Start()
+    {
+        // 初期ストック数に基づいてアイコンの表示を設定
+        UpdatePlayerStockArea(initialStockCount);
+    }
+
+
+
     // ストック数に応じて砲弾アイコンを表示する
     public void UpdatePlayerStockArea(int StockCount)
     {

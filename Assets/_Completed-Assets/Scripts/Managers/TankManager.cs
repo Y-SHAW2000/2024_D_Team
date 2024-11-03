@@ -49,11 +49,23 @@ namespace Complete
             }
 
             m_Shooting.OnShellStockChanged += HandleShellStockChanged;  // TankShooting の OnShellStockChanged イベントに追加
+
         }
+
         private void HandleShellStockChanged(int newStock)
         {
             OnWeaponStockChanged?.Invoke(m_PlayerNumber, newStock); // OnWeaponStockChangedイベントを発生
 
+        }
+
+
+        private void OnDestroy()
+        {
+            if (m_Shooting != null)
+            {
+                m_Shooting.OnShellStockChanged -= HandleShellStockChanged;
+
+            }
         }
 
         // Used during the phases of the game where the player shouldn't be able to control their tank.
