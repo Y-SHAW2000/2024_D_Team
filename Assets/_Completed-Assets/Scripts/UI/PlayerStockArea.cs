@@ -27,10 +27,16 @@ public class PlayerStockArea : MonoBehaviour
         // 1発アイコンの表示・非表示設定
         for (int i = 0; i < SingleBullet.Length; i++)
         {
-            // stockCountによってアイコンを表示・非表示
-            SingleBullet[i].gameObject.SetActive(i < StockCount % 10); //()内を満たす分表示する
+            if (StockCount != 50)
+            {
+                // stockCountによってアイコンを表示・非表示
+                SingleBullet[i].gameObject.SetActive(i < StockCount % 10); //()内を満たす分表示する
+            }
+            else
+            {
+                SingleBullet[i].gameObject.SetActive(i < 10);
+            }
         }
- 
         // 10発アイコンの表示・非表示設定
         int TenCount = StockCount / 10;
         for (int i = 0; i < Bullets.Length; i++)
