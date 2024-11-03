@@ -28,7 +28,7 @@ namespace Complete
         public int MaxBullet = 50;                    // 所持可能な最大砲弾数
         public int ReroadBullet = 10;            // 補充する砲弾の数
         private int CurrentBullet;                    // 現在の砲弾数
-        private bool IncreasingAim;             //飛距離ゲージが伸びてるかどうか
+        private bool Increasing;             //飛距離ゲージが伸びてるかどうか
         public event Action<int> OnShellStockChanged; // 砲弾所持数の変化を通知するイベント
 
         private void OnEnable()
@@ -39,7 +39,7 @@ namespace Complete
         }
 
 
-        private void Start ()
+        private void Start()
         {
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
@@ -52,51 +52,54 @@ namespace Complete
             OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
         }
 
-
-        private void Update ()
+        private void Update()
         {
-            // The slider should have a default value of the minimum launch force.
-            m_AimSlider.value = m_MinLaunchForce;
-
-            if(CurrentBullet > 0)//現在の弾数が0じゃないときに処理をする
+            if (CurrentBullet > 0) // 弾数が0でないときのみ処理
             {
-                // If the max force has been exceeded and the shell hasn't yet been launched...
-                if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
+                if (Input.GetButton(m_FireButton)) // ボタンが押されている間
                 {
-                    // ... use the max force and launch the shell.
-                    m_CurrentLaunchForce = m_MaxLaunchForce;
-                    Fire();
+                    if (Increasing)
+                    {
+                        m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+                        if (m_CurrentLaunchForce >= m_MaxLaunchForce)
+                        {
+                            m_CurrentLaunchForce = m_MaxLaunchForce;
+                            Increasing = false; // 減少に切り替え
+                        }
+                    }
+                    else
+                    {
+                        m_CurrentLaunchForce -= m_ChargeSpeed * Time.deltaTime;
+                        if (m_CurrentLaunchForce <= m_MinLaunchForce)
+                        {
+                            m_CurrentLaunchForce = m_MinLaunchForce;
+                            Increasing = true; // 増加に切り替え
+                        }
+                    }
+
+                    // スライダーを現在の発射力に合わせて更新
+                    m_AimSlider.value = m_CurrentLaunchForce;
                 }
-                // Otherwise, if the fire button has just started being pressed...
-                else if (Input.GetButtonDown(m_FireButton))
+
+                if (Input.GetButtonDown(m_FireButton)) // ボタンが押されたときに発射準備
                 {
-                    // ... reset the fired flag and reset the launch force.
                     m_Fired = false;
                     m_CurrentLaunchForce = m_MinLaunchForce;
-
-                    // Change the clip to the charging clip and start it playing.
                     m_ShootingAudio.clip = m_ChargingClip;
                     m_ShootingAudio.Play();
                 }
-                // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
-                else if (Input.GetButton(m_FireButton) && !m_Fired)
-                {
-                    // Increment the launch force and update the slider.
-                    m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
-                    m_AimSlider.value = m_CurrentLaunchForce;
-                }
-                // Otherwise, if the fire button is released and the shell hasn't been launched yet...
-                else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
+                if (Input.GetButtonUp(m_FireButton) && !m_Fired) // ボタンが離されたら発射
                 {
-                    // ... launch the shell.
                     Fire();
+                    m_CurrentLaunchForce = m_MinLaunchForce;
+                    m_AimSlider.value = m_MinLaunchForce;
                 }
             }
         }
 
 
-        private void Fire ()
+        private void Fire()
         {
             if (CurrentBullet <= 0) return; // 弾がない場合は発射できない
 
@@ -106,14 +109,14 @@ namespace Complete
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
-                Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+                Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
             // Set the shell's velocity to the launch force in the fire position's forward direction.
-            shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; 
+            shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
             // Change the clip to the firing clip and play it.
             m_ShootingAudio.clip = m_FireClip;
-            m_ShootingAudio.Play ();
+            m_ShootingAudio.Play();
 
             // Reset the launch force.  This is a precaution in case of missing button events.
             m_CurrentLaunchForce = m_MinLaunchForce;
