@@ -10,12 +10,12 @@ public class PlayerStockArea : MonoBehaviour
     // 10発分の弾の参照 (Shells10～Shells40)
     [SerializeField] private Image[] Bullets;
 
-    // 初期のストック数（インスペクターから設定）
+    // 初期のストック数
     [SerializeField] private int initialStockCount = 10;
 
     private void Start()
     {
-        // 初期ストック数に基づいてアイコンの表示を設定
+        // 初期ストック数からアイコンの表示設定
         UpdatePlayerStockArea(initialStockCount);
     }
 
@@ -27,16 +27,17 @@ public class PlayerStockArea : MonoBehaviour
         // 1発アイコンの表示・非表示設定
         for (int i = 0; i < SingleBullet.Length; i++)
         {
-            // stockCountに応じて該当アイコンを表示または非表示
+            // stockCountによってアイコンを表示・非表示
             SingleBullet[i].gameObject.SetActive(i < StockCount % 10); //()内を満たす分表示する
         }
-
+ 
         // 10発アイコンの表示・非表示設定
         int TenCount = StockCount / 10;
         for (int i = 0; i < Bullets.Length; i++)
         {
             Bullets[i].gameObject.SetActive(i < TenCount);
         }
+        
     }
 }
 

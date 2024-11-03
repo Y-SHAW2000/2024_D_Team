@@ -14,7 +14,6 @@ namespace Complete
 
         private void Start()
         {
-            UnityEngine.Debug.Log("gamemanager" + gameManager + "tankmanager" + tankManager);
             if (gameManager != null)
             {
                 gameManager.OnGameStateChanged += HandleGameStateChanged; //イベントの登録
@@ -48,7 +47,7 @@ namespace Complete
         }
         private void UpdatePlayerStockArea(int playerNumber, int newStock)  // プレイヤー番号に応じて HUD の砲弾ストック数を更新
         {
-            UnityEngine.Debug.Log("player" + playerNumber + "Stock" + newStock);
+            //UnityEngine.Debug.Log("player" + playerNumber + "Stock" + newStock);
             if (playerNumber == 1)
             {
                 UnityEngine.Debug.Log("player" + playerNumber + "Stock" + newStock);
