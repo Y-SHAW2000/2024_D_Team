@@ -47,10 +47,8 @@ namespace Complete
         }
         private void UpdatePlayerStockArea(int playerNumber, int newStock)  // プレイヤー番号に応じて HUD の砲弾ストック数を更新
         {
-            //UnityEngine.Debug.Log("player" + playerNumber + "Stock" + newStock);
             if (playerNumber == 1)
             {
-                UnityEngine.Debug.Log("player" + playerNumber + "Stock" + newStock);
                 player1StockArea.UpdatePlayerStockArea(newStock);
             }
             else if (playerNumber == 2)
