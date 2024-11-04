@@ -136,7 +136,6 @@ namespace Complete
         private void TurretTurn() //砲塔の回転を行う
         {
             float TurretRotation = m_TurretRotationInput * m_TurretRotationSpeed * Time.deltaTime; //方向×速度×時間で回転角度を計算
-            UnityEngine.Debug.Log("rotation " + TurretRotation);
             if (m_Turret != null)
             {
                 m_Turret.transform.Rotate(0f, TurretRotation, 0f); //ゲームオブジェクトを参照できるとき砲塔のy軸の角度をTurretRotation分回転させる
