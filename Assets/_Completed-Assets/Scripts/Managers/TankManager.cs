@@ -23,7 +23,7 @@ namespace Complete
         private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable and enable control.
         private GameObject m_CanvasGameObject;                  // Used to disable the world space UI during the Starting and Ending phases of each round.
 
-
+        public event Action<int, int> OnWeaponStockChanged;     // プレイヤー番号と砲弾の所持数を通知するイベント
         public void Setup ()
         {
             // Get references to the components.
@@ -47,8 +47,26 @@ namespace Complete
                 // ... set their material color to the color specific to this tank.
                 renderers[i].material.color = m_PlayerColor;
             }
+
+            m_Shooting.OnShellStockChanged += HandleShellStockChanged;  // TankShooting の OnShellStockChanged イベントに追加
+
         }
 
+        private void HandleShellStockChanged(int newStock)
+        {
+            OnWeaponStockChanged?.Invoke(m_PlayerNumber, newStock); // OnWeaponStockChangedイベントを発生
+
+        }
+
+
+        private void OnDestroy()
+        {
+            if (m_Shooting != null)
+            {
+                m_Shooting.OnShellStockChanged -= HandleShellStockChanged;
+
+            }
+        }
 
         // Used during the phases of the game where the player shouldn't be able to control their tank.
         public void DisableControl ()
