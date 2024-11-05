@@ -1,6 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/_Completed-Assets/Scripts/Cartridge.meta
 guid: b35d78337c93aa0469b133ef9042d8e5
 folderAsset: yes
+========
+guid: 9fc0d4010bbf28b4594072e72b8655ab
+>>>>>>>> parent of f6a66f5 (TitleSceneとVS Player Sceneにイメージ追加、ボタンスケール調整、ワープ機能実装済み):Assets/Scenes/SampleScene.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
