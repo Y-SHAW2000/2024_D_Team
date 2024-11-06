@@ -30,8 +30,7 @@ namespace Complete
 
         void Update()
         {
-            //
-            //Debug.Log("iscooldown :" + isOnCooldown);
+            Debug.Log("iscooldown :" + isOnCooldown);
             if (isTeleporting)
             {
                 tankMovement.enabled = false;

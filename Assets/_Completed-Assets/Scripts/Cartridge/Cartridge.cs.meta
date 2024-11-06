@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/_Completed-Assets/Scripts/Cartridge/Cartridge.cs.meta
+guid: b8c1bb97e2fb90f41a58cb10f8ae7a2a
+========
+guid: 2c945ea08d2800d4f8095c2e782daecb
+>>>>>>>> parent of f6a66f5 (TitleSceneとVS Player Sceneにイメージ追加、ボタンスケール調整、ワープ機能実装済み):Assets/PortalTarget.cs.meta
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
