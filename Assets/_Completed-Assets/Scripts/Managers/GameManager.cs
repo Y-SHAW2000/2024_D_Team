@@ -13,7 +13,8 @@ namespace Complete
         public float m_EndDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases.
         public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases.
         public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
-        public GameObject m_TankPrefab;             // Reference to the prefab the players will control.
+        public GameObject m_TankPrefab;
+        public GameObject m_TankPrefab_for_TPS; // Reference to the prefab the players will control.
         public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks.
 
 
@@ -60,8 +61,14 @@ namespace Complete
 
         private void SpawnAllTanks()
         {
+            // ... create them, set their player number and references needed for control.
+            m_Tanks[0].m_Instance =
+                Instantiate(m_TankPrefab_for_TPS, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation) as GameObject;
+            m_Tanks[0].m_PlayerNumber = 1;
+            m_Tanks[0].Setup();
+
             // For all the tanks...
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 1; i < m_Tanks.Length; i++)
             {
                 // ... create them, set their player number and references needed for control.
                 m_Tanks[i].m_Instance =
@@ -85,7 +92,7 @@ namespace Complete
             }
 
             // These are the targets the camera should follow.
-            m_CameraControl.m_Targets = targets;
+            //m_CameraControl.m_Targets = targets;
         }
 
 
@@ -125,7 +132,7 @@ namespace Complete
             DisableTankControl();
 
             // Snap the camera's zoom and position to something appropriate for the reset tanks.
-            m_CameraControl.SetStartPositionAndSize();
+            //m_CameraControl.SetStartPositionAndSize();
 
             // Increment the round number and display text showing the players what round it is.
             m_RoundNumber++;
