@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+
 
 namespace Complete
 {
@@ -30,6 +32,13 @@ namespace Complete
         private int CurrentBullet;                    // 現在の砲弾数
         private bool Increasing;             //飛距離ゲージが伸びてるかどうか
         public event Action<int> OnShellStockChanged; // 砲弾所持数の変化を通知するイベント
+
+        // 地雷管理用の変数を追加
+        [SerializeField] private WeaponStockData mineStockData;    // 地雷の所持数を管理するための WeaponStockData 変数
+        [SerializeField] private GameObject minePrefab;    // Mine プレハブのオブジェクト参照
+        [SerializeField] private string placeMineKey = "PlaceMine";    // InputManager で定義した、地雷を設置するキーの名前
+        public UnityEvent<int> OnMineCountChanged;    // 地雷の所持数が変化したときのイベント
+        public UnityEvent OnMinePlaced;    // 地雷を設置したときのイベント
 
         private void OnEnable()
         {
