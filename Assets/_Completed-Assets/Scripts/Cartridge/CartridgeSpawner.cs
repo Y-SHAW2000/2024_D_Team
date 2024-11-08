@@ -8,57 +8,59 @@ public class CartridgeSpawner : MonoBehaviour
     [SerializeField]
     private GameObject CartridgePrefab;
     [SerializeField]
-    private float spawnInterval = 5f; // ƒJ[ƒgƒŠƒbƒW‚Ì¶¬ŠÔŠu
+    private float spawnInterval = 5f; // ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½Ìï¿½ï¿½ï¿½ï¿½ÔŠu
     [SerializeField]
-    private Vector2 spawnAreaMin; // ¶¬”ÍˆÍ‚ÌÅ¬’liX, ZÀ•Wj
+    private Vector2 spawnAreaMin; // ï¿½ï¿½ï¿½ï¿½ï¿½ÍˆÍ‚ÌÅï¿½ï¿½lï¿½iX, Zï¿½ï¿½ï¿½Wï¿½j
     [SerializeField]
-    private Vector2 spawnAreaMax; // ¶¬”ÍˆÍ‚ÌÅ‘å’liX, ZÀ•Wj
+    private Vector2 spawnAreaMax; // ï¿½ï¿½ï¿½ï¿½ï¿½ÍˆÍ‚ÌÅ‘ï¿½lï¿½iX, Zï¿½ï¿½ï¿½Wï¿½j
+    [SerializeField]
+    public CartridgeData cartridgedata;
 
     private Complete.GameManager gameManager; 
 
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = FindObjectOfType<Complete.GameManager>(); //ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚Ö‚ÌQÆ
+        gameManager = FindObjectOfType<Complete.GameManager>(); //ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½Ö‚ÌQï¿½ï¿½
 
-        // OnGameStateChanged ƒCƒxƒ“ƒg‚É HandleGameStateChanged ‚ğ“o˜^
+        // OnGameStateChanged ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ HandleGameStateChanged ï¿½ï¿½oï¿½^
         gameManager.OnGameStateChanged += HandleGameStateChanged;
     }
 
-    private void HandleGameStateChanged(Complete.GameManager.GameState gameState) //qƒ‹[ƒ`ƒ“‚ÌŠJnE’â~
+    private void HandleGameStateChanged(Complete.GameManager.GameState gameState) //ï¿½qï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½ÌŠJï¿½nï¿½Eï¿½ï¿½~
     {
         if (gameState == Complete.GameManager.GameState.RoundPlaying)
         {
-            // ƒQ[ƒ€ƒvƒŒƒC’†‚È‚ç SpawnRoutine ƒRƒ‹[ƒ`ƒ“‚ğŠJn
-            StartCoroutine(SpawnRoutine());
+            // ï¿½Qï¿½[ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½È‚ï¿½ SpawnRoutine ï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½n
+            StartCoroutine(SpawnRoutine(cartridgedata));
         }
         else
         {
-            // ƒQ[ƒ€‚ªƒvƒŒƒC’†‚Å‚È‚¢‚È‚çƒRƒ‹[ƒ`ƒ“‚ğ’â~
-            StopCoroutine(SpawnRoutine());
+            // ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Å‚È‚ï¿½ï¿½È‚ï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½~
+            StopCoroutine(SpawnRoutine(cartridgedata));
         }
     }
 
 
-    // ƒJ[ƒgƒŠƒbƒW‚ğƒ‰ƒ“ƒ_ƒ€‚ÈˆÊ’u‚É¶¬‚·‚éƒƒ\ƒbƒh
-    private void SpawnCartridge()
+    // ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ÈˆÊ’uï¿½Éï¿½ï¿½ï¿½ï¿½ï¿½ï¿½éƒï¿½\ï¿½bï¿½h
+    private void SpawnCartridge(CartridgeData cartridgedata)
     {
-        // ƒ‰ƒ“ƒ_ƒ€‚ÈˆÊ’u‚ğŒvZ
-        float randomX = Random.Range(spawnAreaMin.x, spawnAreaMax.x);//xÀ•W‚Ì’u‚¯‚éˆÊ’u
-        float randomZ = Random.Range(spawnAreaMin.y, spawnAreaMax.y);//zÀ•W‚Ì’u‚¯‚éˆÊ’u
-        Vector3 spawnPosition = new Vector3(randomX, 0f, randomZ); // ’n–Ê‚É”z’u‚·‚é‚½‚ßYÀ•W‚Í0
+        // ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ÈˆÊ’uï¿½ï¿½ï¿½vï¿½Z
+        float randomX = Random.Range(spawnAreaMin.x, spawnAreaMax.x);//xï¿½ï¿½ï¿½Wï¿½Ì’uï¿½ï¿½ï¿½ï¿½Ê’u
+        float randomZ = Random.Range(spawnAreaMin.y, spawnAreaMax.y);//zï¿½ï¿½ï¿½Wï¿½Ì’uï¿½ï¿½ï¿½ï¿½Ê’u
+        Vector3 spawnPosition = new Vector3(randomX, 0f, randomZ); // ï¿½nï¿½Ê‚É”zï¿½uï¿½ï¿½ï¿½é‚½ï¿½ï¿½Yï¿½ï¿½ï¿½Wï¿½ï¿½0
 
-        // ƒJ[ƒgƒŠƒbƒW‚ğ¶¬
+        // ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½ğ¶ï¿½
         Instantiate(CartridgePrefab, spawnPosition, Quaternion.identity);
     }
 
-    // ˆê’èŠÔŠu‚ÅƒJ[ƒgƒŠƒbƒW‚ğ¶¬‚·‚éƒRƒ‹[ƒ`ƒ“
-    private IEnumerator SpawnRoutine()
+    // ï¿½ï¿½ï¿½ÔŠuï¿½ÅƒJï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½
+    private IEnumerator SpawnRoutine(CartridgeData cartridgedata)
     {
         while (true)
         {
-            SpawnCartridge(); // ƒJ[ƒgƒŠƒbƒW‚ğ¶¬
-            yield return new WaitForSeconds(spawnInterval); // spawnInterval•b‘Ò‹@
+            SpawnCartridge(cartridgedata); // ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½ğ¶ï¿½
+            yield return new WaitForSeconds(spawnInterval); // spawnIntervalï¿½bï¿½Ò‹@
         }
     }
 }
