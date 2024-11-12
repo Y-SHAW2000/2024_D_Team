@@ -66,6 +66,7 @@ namespace Complete
                 Instantiate(m_TankPrefab_for_TPS, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation) as GameObject;
             m_Tanks[0].m_PlayerNumber = 1;
             m_Tanks[0].Setup();
+            m_Tanks[0].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + "1" +"Slider").GetComponent<Slider>();
 
             // For all the tanks...
             for (int i = 1; i < m_Tanks.Length; i++)
@@ -75,6 +76,8 @@ namespace Complete
                     Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
                 m_Tanks[i].m_PlayerNumber = i + 1;
                 m_Tanks[i].Setup();
+                m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i+1) + "Slider").GetComponent<Slider>();
+
             }
         }
 

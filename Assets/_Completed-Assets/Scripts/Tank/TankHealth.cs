@@ -29,6 +29,14 @@ namespace Complete
 
             // Disable the prefab so it can be activated when it's required.
             m_ExplosionParticles.gameObject.SetActive (false);
+
+            
+        }
+
+        private void Start()
+        {
+            m_Slider.maxValue = m_StartingHealth;
+            m_Slider.value = m_Slider.maxValue;
         }
 
 
