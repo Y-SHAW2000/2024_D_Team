@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Complete
 {
     [Serializable]
-    public class TankManager  : MonoBehaviour
+    public class TankManager  
     {
         // This class is to manage various settings on a tank.
         // It works with the GameManager class to control how the tanks behave
@@ -59,23 +60,23 @@ namespace Complete
             OnWeaponStockChanged?.Invoke(m_PlayerNumber, weaponStock); // OnWeaponStockChangedイベントを発生
         }
         
-        private void HandleMinePlaced()
+        private async void HandleMinePlaced()
         {
-            // 地雷を設置した際、コルーチンで一定時間タンクの動きを止める
-            StartCoroutine(DisableTankForSeconds(2.0f)); // 例: 2秒間停止
+            // 地雷を設置した際、一定時間タンクの動きを止める
+            await DisableTankForSeconds(2.0f);
         }
 
-        private IEnumerator DisableTankForSeconds(float duration)
+        private async Task DisableTankForSeconds(float duration)
         {
             DisableControl();
-            yield return new WaitForSeconds(duration);
+            await Task.Delay((int)(duration * 1000)); // 秒単位をミリ秒に変換
             EnableControl();
 
         }
 
         private void OnDestroy()
         {   
-            m_Shooting = GetComponent<TankShooting>();
+            
             if (m_Shooting != null)
             {
                 m_Shooting.OnWeaponStockChanged -= HandleWeaponStockChanged;
