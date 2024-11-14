@@ -10,8 +10,6 @@ public class CartridgeSpawner : MonoBehaviour
     [SerializeField]
     private CartridgeData cartridgedata;
     [SerializeField]
-    private float spawnInterval = 5f;
-    [SerializeField]
     private Vector2 spawnAreaMin; // �����͈͂̍ŏ��l�iX, Z���W�j
     [SerializeField]
     private Vector2 spawnAreaMax; // �����͈͂̍ő�l�iX, Z���W�j

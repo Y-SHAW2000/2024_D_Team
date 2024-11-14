@@ -50,8 +50,6 @@ namespace Complete
 
         private void Start()
         {   
-            Debug.Log("Current Shell Count: " + weaponCount.weaponStock["Shell"]);  // 弾数を確認
-            Debug.Log("Current Mine Count: " + weaponCount.weaponStock["Mine"]);  // 弾数を確認
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
             m_PlaceMine = "Mine" + m_PlayerNumber;
@@ -175,6 +173,7 @@ namespace Complete
             {
                 // 地雷を生成
                 Vector3 spawnPosition = m_FireTransform.position + m_FireTransform.forward * 2f; // 地雷の発射位置（タンクの前方）
+                spawnPosition.y = m_FireTransform.position.y - 1f; // タンクの位置より1単位低い位置に設定（適宜調整）
                 Instantiate(MinePrefab, spawnPosition, Quaternion.identity); // 地雷を設置
 
                 // 所持数をデクリメント
