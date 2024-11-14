@@ -1,49 +1,79 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 using Complete;
 
 public class PlayerStockArea : MonoBehaviour
 {
-    // ’e‚ÌQÆ (Shell1`Shell10)
+    // ï¿½eï¿½ÌQï¿½ï¿½ (Shell1ï¿½`Shell10)
     [SerializeField] private Image[] SingleBullet;
 
-    // 10”­•ª‚Ì’e‚ÌQÆ (Shells10`Shells40)
+    // 10ï¿½ï¿½ï¿½ï¿½ï¿½Ì’eï¿½ÌQï¿½ï¿½ (Shells10ï¿½`Shells40)
     [SerializeField] private Image[] Bullets;
 
-    // ‰Šú‚ÌƒXƒgƒbƒN”
-    [SerializeField] private int initialStockCount = 10;
+    [SerializeField] private Image[] Mines;
 
+    private WeaponStockData weaponstockdata;
     private void Start()
     {
-        // ‰ŠúƒXƒgƒbƒN”‚©‚çƒAƒCƒRƒ“‚Ì•\¦İ’è
-        UpdatePlayerStockArea(initialStockCount);
+        {
+            // weaponstockdata ãŒ null ã®å ´åˆã«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–
+            if (weaponstockdata == null)
+            {
+                weaponstockdata = new WeaponStockData(); // ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
+            }
+
+            // weaponstockdata.weaponInitial ãŒ null ã§ãªã„ã“ã¨ã‚’ç¢ºèª
+            if (weaponstockdata != null && weaponstockdata.weaponInitial != null)
+            {
+                // weaponInitial ãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ã‚‹å ´åˆã€æ›´æ–°
+                UpdatePlayerStockArea(weaponstockdata.weaponInitial);
+            }
+            else
+            {
+                // weaponInitial ãŒ null ã®å ´åˆã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®åˆæœŸå€¤ã‚’è¨­å®š
+                Dictionary<string, int> defaultWeaponStock = new Dictionary<string, int>
+                {
+                    { "Shell", 20 },  // åˆæœŸã‚·ã‚§ãƒ«ã®æ•°
+                    { "Mine", 5 }     // åˆæœŸãƒã‚¤ãƒ³ã®æ•°
+                };
+
+                UpdatePlayerStockArea(defaultWeaponStock);
+            }
+        }
+
+    
     }
 
 
 
-    // ƒXƒgƒbƒN”‚É‰‚¶‚Ä–C’eƒAƒCƒRƒ“‚ğ•\¦‚·‚é
-    public void UpdatePlayerStockArea(int StockCount)
+    // ï¿½Xï¿½gï¿½bï¿½Nï¿½ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½Ä–Cï¿½eï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public void UpdatePlayerStockArea(Dictionary<string, int> weaponStock)
     {
-        // 1”­ƒAƒCƒRƒ“‚Ì•\¦E”ñ•\¦İ’è
+        // 1ï¿½ï¿½ï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½Ì•\ï¿½ï¿½ï¿½Eï¿½ï¿½\ï¿½ï¿½ï¿½İ’ï¿½
         for (int i = 0; i < SingleBullet.Length; i++)
         {
-            if (StockCount != 50)
+            if (weaponStock["Shell"] != 50)
             {
-                // stockCount‚É‚æ‚Á‚ÄƒAƒCƒRƒ“‚ğ•\¦E”ñ•\¦
-                SingleBullet[i].gameObject.SetActive(i < StockCount % 10); //()“à‚ğ–‚½‚·•ª•\¦‚·‚é
+                // stockCountï¿½É‚ï¿½ï¿½ï¿½ÄƒAï¿½Cï¿½Rï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½Eï¿½ï¿½\ï¿½ï¿½
+                SingleBullet[i].gameObject.SetActive(i < weaponStock["Shell"] % 10); //()ï¿½ï¿½ï¿½ğ–‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             }
             else
             {
                 SingleBullet[i].gameObject.SetActive(i < 10);
             }
         }
-        // 10”­ƒAƒCƒRƒ“‚Ì•\¦E”ñ•\¦İ’è
-        int TenCount = StockCount / 10;
+        // 10ï¿½ï¿½ï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½Ì•\ï¿½ï¿½ï¿½Eï¿½ï¿½\ï¿½ï¿½ï¿½İ’ï¿½
+        int TenCount = weaponStock["Shell"] / 10;
         for (int i = 0; i < Bullets.Length; i++)
         {
             Bullets[i].gameObject.SetActive(i < TenCount);
         }
         
+        for (int i = 0; i < Mines.Length; i++)
+        {
+            Mines[i].gameObject.SetActive(i < weaponStock["Mine"]);
+        }
     }
 }
 

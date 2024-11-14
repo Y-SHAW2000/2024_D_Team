@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Complete
 {
     [Serializable]
-    public class TankManager
+    public class TankManager  
     {
         // This class is to manage various settings on a tank.
         // It works with the GameManager class to control how the tanks behave
@@ -22,8 +25,8 @@ namespace Complete
         private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable and enable control.
         private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable and enable control.
         private GameObject m_CanvasGameObject;                  // Used to disable the world space UI during the Starting and Ending phases of each round.
-
-        public event Action<int, int> OnWeaponStockChanged;     // プレイヤー番号と砲弾の所持数を通知するイベント
+        public event Action<int, Dictionary<string, int>> OnWeaponStockChanged; 
+        
         public void Setup()
         {
             // Get references to the components.
@@ -48,22 +51,35 @@ namespace Complete
                 renderers[i].material.color = m_PlayerColor;
             }
 
-            m_Shooting.OnShellStockChanged += HandleShellStockChanged;  // TankShooting の OnShellStockChanged イベントに追加
-
+            m_Shooting.OnWeaponStockChanged += HandleWeaponStockChanged;  // TankShooting の OnShellStockChanged イベントに追加
+            m_Shooting.OnMinePlaced += HandleMinePlaced;
         }
 
-        private void HandleShellStockChanged(int newStock)
+        private void HandleWeaponStockChanged(Dictionary<string, int> weaponStock)
         {
-            OnWeaponStockChanged?.Invoke(m_PlayerNumber, newStock); // OnWeaponStockChangedイベントを発生
-
+            OnWeaponStockChanged?.Invoke(m_PlayerNumber, weaponStock); // OnWeaponStockChangedイベントを発生
+        }
+        
+        private async void HandleMinePlaced()
+        {
+            // 地雷を設置した際、一定時間タンクの動きを止める
+            await DisableTankForSeconds(2.0f);
         }
 
+        private async Task DisableTankForSeconds(float duration)
+        {
+            DisableControl();
+            await Task.Delay((int)(duration * 1000)); // 秒単位をミリ秒に変換
+            EnableControl();
+
+        }
 
         private void OnDestroy()
-        {
+        {   
+            
             if (m_Shooting != null)
             {
-                m_Shooting.OnShellStockChanged -= HandleShellStockChanged;
+                m_Shooting.OnWeaponStockChanged -= HandleWeaponStockChanged;
 
             }
         }
