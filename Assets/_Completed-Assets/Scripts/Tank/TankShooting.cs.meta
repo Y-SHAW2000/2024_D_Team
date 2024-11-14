@@ -1,12 +1,16 @@
 fileFormatVersion: 2
 guid: 184d72ea2424d1443bca885930fe844a
-timeCreated: 1426769294
-licenseType: Store
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - projectile: {fileID: 5409530, guid: 008ecb1b70bec724fa2cd34255b0d8f8, type: 2}
-  - launchPosition: {instanceID: 0}
+  - m_Shell: {instanceID: 0}
+  - m_FireTransform: {instanceID: 0}
+  - m_AimSlider: {instanceID: 0}
+  - m_ShootingAudio: {instanceID: 0}
+  - m_ChargingClip: {instanceID: 0}
+  - m_FireClip: {instanceID: 0}
+  - MinePrefab: {fileID: 192454, guid: 27c8c6e038c093a42a9c493b1892f764, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

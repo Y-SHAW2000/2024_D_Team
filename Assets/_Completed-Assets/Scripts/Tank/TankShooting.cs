@@ -49,7 +49,9 @@ namespace Complete
 
 
         private void Start()
-        {
+        {   
+            Debug.Log("Current Shell Count: " + weaponCount.weaponStock["Shell"]);  // 弾数を確認
+            Debug.Log("Current Mine Count: " + weaponCount.weaponStock["Mine"]);  // 弾数を確認
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
             m_PlaceMine = "Mine" + m_PlayerNumber;
@@ -64,7 +66,7 @@ namespace Complete
 
         private void Update()
         {
-            if (weaponCount.GetCurrent("shell") > 0) // 弾数が0でないときのみ処理
+            if (weaponCount.GetCurrent("Shell") > 0) // 弾数が0でないときのみ処理
             {
                 if (Input.GetButton(m_FireButton)) // ボタンが押されている間
                 {
@@ -115,10 +117,10 @@ namespace Complete
 
         private void Fire()
         {
-            if (CurrentBullet <= 0) return; // 弾がない場合は発射できない
+            if (weaponCount.weaponStock["Shell"] <= 0) return; // 弾がない場合は発射できない
 
             m_Fired = true;
-            CurrentBullet--;  // 弾数を減少
+            weaponCount.weaponStock["Shell"]--;  // 弾数を減少
             OnWeaponStockChanged?.Invoke(weaponCount.weaponStock);  // イベントを発生 // イベントを発生
 
             // Create an instance of the shell and store a reference to it's rigidbody.
@@ -140,11 +142,11 @@ namespace Complete
 
         public void Reload()
         {
-            CurrentBullet += ReroadBullet;
+            weaponCount.weaponStock["Shell"] += weaponCount.weaponReplenishment["Shell"];
 
-            if (CurrentBullet > MaxBullet) //リロードしたときに最大弾数を超えないようにする
+            if (weaponCount.weaponStock["Shell"] > weaponCount.weaponMax["Shell"]) //リロードしたときに最大弾数を超えないようにする
             {
-                CurrentBullet = MaxBullet;
+                weaponCount.weaponStock["Shell"] = weaponCount.weaponMax["Shell"];
             }
             OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); // イベントを発生
         }
@@ -164,6 +166,11 @@ namespace Complete
         }
         private void PlaceMine()
         {
+            if (MinePrefab == null)
+            {
+                Debug.LogError("MinePrefab が設定されていません！");
+                return;
+            }
             if (weaponCount.GetCurrent("Mine") > 0) // 所持数が0より多い場合
             {
                 // 地雷を生成

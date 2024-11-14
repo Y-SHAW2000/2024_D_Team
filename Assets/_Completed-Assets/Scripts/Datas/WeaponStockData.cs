@@ -48,12 +48,7 @@ public class WeaponStockData
     // 現在の所持数を取得
     public int GetCurrent(string weapon)
     {
-        if (weaponStock.ContainsKey(weapon))
-        {
-            return weaponStock[weapon];
-        }
-        Debug.LogWarning($"Weapon '{weapon}' not found!");
-        return 0;
+        return weaponStock[weapon];
     }
 
     // 現在の所持数を初期化
