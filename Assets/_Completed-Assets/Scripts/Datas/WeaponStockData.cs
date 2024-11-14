@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Complete;
 
 [System.Serializable]
 public class WeaponStockData
@@ -14,12 +16,17 @@ public class WeaponStockData
     public Dictionary<string, int> weaponStock; // 武器名と所持数を管理する辞書
     public Dictionary<string, int> weaponMax;   // 武器の最大所持数を管理する辞書
     public Dictionary<string, int> weaponReplenishment; // 武器の補充量を管理する辞書
+    public Dictionary<string, int> weaponInitial;
 
     // コンストラクタ
     public WeaponStockData()
     {
-        // 各武器の初期化
         weaponStock = new Dictionary<string, int>
+        {
+            { "Mine", mineInitial },
+            { "Shell", shellInitial }
+        };
+        weaponInitial = new Dictionary<string, int>
         {
             { "Mine", mineInitial },
             { "Shell", shellInitial }
