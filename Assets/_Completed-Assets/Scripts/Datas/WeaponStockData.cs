@@ -1,47 +1,87 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
 
 [System.Serializable]
 public class WeaponStockData
 {
-    [SerializeField] private int mineInitial; // 初期所持数
-    [SerializeField] private int mineMax; // 最大所持数
-    [SerializeField] private int minereplenishment; // 補充量
-    private int mineCurrent; // 現在の所持数
-    
+    [SerializeField] private int mineInitial = 0;       // 初期地雷の所持数
+    [SerializeField] private int mineMax = 3;          // 最大地雷の所持数
+    [SerializeField] private int mineReplenishment = 1; // 地雷の補充量
+    [SerializeField] private int shellInitial = 10;     // 初期弾の所持数
+    [SerializeField] private int shellMax = 30;         // 最大弾の所持数
+    [SerializeField] private int shellReplenishment = 10; // 弾の補充量
+
+    public Dictionary<string, int> weaponStock; // 武器名と所持数を管理する辞書
+    public Dictionary<string, int> weaponMax;   // 武器の最大所持数を管理する辞書
+    public Dictionary<string, int> weaponReplenishment; // 武器の補充量を管理する辞書
+
     // コンストラクタ
-    public WeaponStockData(int initial, int max, int replenishment)
+    public WeaponStockData()
     {
-        mineInitial = initial;
-        mineMax = max;
-        minereplenishment = replenishment;
-        mineCurrent = mineInitial; // 初期所持数で設定
+        // 各武器の初期化
+        weaponStock = new Dictionary<string, int>
+        {
+            { "Mine", mineInitial },
+            { "Shell", shellInitial }
+        };
+
+        weaponMax = new Dictionary<string, int>
+        {
+            { "Mine", mineMax },
+            { "Shell", shellMax }
+        };
+
+        weaponReplenishment = new Dictionary<string, int>
+        {
+            { "Mine", mineReplenishment },
+            { "Shell", shellReplenishment }
+        };
     }
 
-    // 現在の所持数を返すgetter
-    public int GetMineCurrent()
+    // 現在の所持数を取得
+    public int GetCurrent(string weapon)
     {
-        return mineCurrent;
+        if (weaponStock.ContainsKey(weapon))
+        {
+            return weaponStock[weapon];
+        }
+        Debug.LogWarning($"Weapon '{weapon}' not found!");
+        return 0;
     }
 
-    // 現在所持数を初期化する
-    public void ResetMineCount()
+    // 現在の所持数を初期化
+    public void ResetCount(string weapon)
     {
-        mineCurrent = mineInitial; // 初期値にリセット
+        if (weaponStock.ContainsKey(weapon))
+        {
+            weaponStock[weapon] = weapon == "Mine" ? mineInitial : shellInitial;
+        }
     }
 
-    // 現在の所持数を増やす（最大値を超えないようにする）
-    public void IncreaseMineCount(int amount)
+    // 現在の所持数を増加（最大値を超えない）
+    public void IncreaseCount(string weapon, int amount)
     {
-        mineCurrent = Mathf.Min(mineCurrent + amount, mineMax); // 増加量が最大値を超えないようにする
+        if (weaponStock.ContainsKey(weapon))
+        {
+            weaponStock[weapon] = Mathf.Min(weaponStock[weapon] + amount, weaponMax[weapon]);
+        }
     }
 
-    // 現在の所持数をデクリメントする（ゼロを下回らないようにする）
-    public void DecreaseMineCount()
+    // 現在の所持数を減少（ゼロを下回らない）
+    public void DecreaseCount(string weapon)
     {
-        mineCurrent = Mathf.Max(mineCurrent - 1, 0); // 減少量がゼロを下回らないようにする
+        if (weaponStock.ContainsKey(weapon))
+        {
+            weaponStock[weapon] = Mathf.Max(weaponStock[weapon] - 1, 0);
+        }
+    }
+
+    // 武器の補充
+    public void Replenish(string weapon)
+    {
+        if (weaponReplenishment.ContainsKey(weapon))
+        {
+            IncreaseCount(weapon, weaponReplenishment[weapon]);
+        }
     }
 }
