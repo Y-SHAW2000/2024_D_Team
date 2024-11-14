@@ -31,6 +31,12 @@ namespace Complete
         private bool Increasing;             //飛距離ゲージが伸びてるかどうか
         public event Action<int> OnShellStockChanged; // 砲弾所持数の変化を通知するイベント
 
+        public WeaponStockData mineCount;         //地雷の所持数を管理するための WeaponStockData 変数
+        public GameObject MinePrefab;           // Mine プレハブのオブジェクト参照
+        public string m_PlaceMine;          // InputManager で定義した、地雷を設置するキーの名前
+        public event Action OnMinePlaced;    // 地雷を設置したときのイベント
+        public event Action<int> OnMineStockChanged; // 地雷所持数の変化を通知するイベント
+
         private void OnEnable()
         {
             // When the tank is turned on, reset the launch force and the UI
@@ -43,7 +49,7 @@ namespace Complete
         {
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
-
+            m_PlaceMine = "Mine" + m_PlayerNumber;
             // The rate that the launch force charges up is the range of possible forces by the max charge time.
             m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
 
@@ -96,6 +102,10 @@ namespace Complete
                     m_AimSlider.value = m_MinLaunchForce;
                 }
             }
+            if (Input.GetButtonDown(m_PlaceMine)) // ボタンが押されている間
+            {
+                PlaceMine();
+            }
         }
 
 
@@ -140,6 +150,29 @@ namespace Complete
             {
                 Reload(); // リロード
                 Destroy(collision.gameObject); // 衝突したカートリッジを消滅
+            }
+            if (collision.gameObject.CompareTag("MineCartridge"))
+            {
+                mineCount.IncreaseMineCount(1);
+                Destroy(collision.gameObject);
+            }
+        }
+        private void PlaceMine()
+        {
+            if (mineCount.GetMineCurrent() > 0) // 所持数が0より多い場合
+            {
+                // 地雷を生成
+                Vector3 spawnPosition = m_FireTransform.position + m_FireTransform.forward * 2f; // 地雷の発射位置（タンクの前方）
+                Instantiate(MinePrefab, spawnPosition, Quaternion.identity); // 地雷を設置
+
+                // 所持数をデクリメント
+                mineCount.DecreaseMineCount(); // 所持数を1減らす
+
+                // 地雷設置後のイベントを通知
+                OnMinePlaced?.Invoke(); // 地雷が設置されたことを通知
+
+                // 所持数の変化を通知
+                OnMineStockChanged?.Invoke(mineCount.GetMineCurrent());
             }
         }
 
