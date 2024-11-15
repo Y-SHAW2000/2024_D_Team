@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,15 @@ namespace Complete
         public int ReroadBullet = 10;            // 補充する砲弾の数
         private int CurrentBullet;                    // 現在の砲弾数
         private bool Increasing;             //飛距離ゲージが伸びてるかどうか
-        public event Action<int> OnShellStockChanged; // 砲弾所持数の変化を通知するイベント
+        
+
+        public WeaponStockData weaponCount;         //地雷の所持数を管理するための WeaponStockData 変数
+        public GameObject MinePrefab;           // Mine プレハブのオブジェクト参照
+        public string m_PlaceMine;          // InputManager で定義した、地雷を設置するキーの名前
+        public event Action OnMinePlaced;    // 地雷を設置したときのイベント
+        public event Action<Dictionary<string, int>> OnWeaponStockChanged;
+        private Dictionary<string, int> weaponData; //武器の所持数管理用
+
 
         private void OnEnable()
         {
@@ -40,21 +49,22 @@ namespace Complete
 
 
         private void Start()
-        {
+        {   
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
-
+            m_PlaceMine = "Mine" + m_PlayerNumber;
             // The rate that the launch force charges up is the range of possible forces by the max charge time.
             m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
 
-            // 弾数の初期化
-            CurrentBullet = BulletStart;
-            OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
+            // 武器数の初期化
+            
+
+            OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); // イベントを発生
         }
 
         private void Update()
         {
-            if (CurrentBullet > 0) // 弾数が0でないときのみ処理
+            if (weaponCount.GetCurrent("Shell") > 0) // 弾数が0でないときのみ処理
             {
                 if (Input.GetButton(m_FireButton)) // ボタンが押されている間
                 {
@@ -96,16 +106,20 @@ namespace Complete
                     m_AimSlider.value = m_MinLaunchForce;
                 }
             }
+            if (Input.GetButtonDown(m_PlaceMine)) // ボタンが押されている間
+            {
+                PlaceMine();
+            }
         }
 
 
         private void Fire()
         {
-            if (CurrentBullet <= 0) return; // 弾がない場合は発射できない
+            if (weaponCount.weaponStock["Shell"] <= 0) return; // 弾がない場合は発射できない
 
             m_Fired = true;
-            CurrentBullet--;  // 弾数を減少
-            OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
+            weaponCount.weaponStock["Shell"]--;  // 弾数を減少
+            OnWeaponStockChanged?.Invoke(weaponCount.weaponStock);  // イベントを発生 // イベントを発生
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
@@ -126,13 +140,13 @@ namespace Complete
 
         public void Reload()
         {
-            CurrentBullet += ReroadBullet;
+            weaponCount.weaponStock["Shell"] += weaponCount.weaponReplenishment["Shell"];
 
-            if (CurrentBullet > MaxBullet) //リロードしたときに最大弾数を超えないようにする
+            if (weaponCount.weaponStock["Shell"] > weaponCount.weaponMax["Shell"]) //リロードしたときに最大弾数を超えないようにする
             {
-                CurrentBullet = MaxBullet;
+                weaponCount.weaponStock["Shell"] = weaponCount.weaponMax["Shell"];
             }
-            OnShellStockChanged?.Invoke(CurrentBullet); // イベントを発生
+            OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); // イベントを発生
         }
         private void OnCollisionEnter(Collision collision)
         {
@@ -141,7 +155,37 @@ namespace Complete
                 Reload(); // リロード
                 Destroy(collision.gameObject); // 衝突したカートリッジを消滅
             }
+            if (collision.gameObject.CompareTag("MineCartridge"))
+            {
+                weaponCount.IncreaseCount("Mine", 1);
+                OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); // イベントを発生
+                Destroy(collision.gameObject);
+            }
         }
+        private void PlaceMine()
+        {
+            if (MinePrefab == null)
+            {
+                Debug.LogError("MinePrefab が設定されていません！");
+                return;
+            }
+            if (weaponCount.GetCurrent("Mine") > 0) // 所持数が0より多い場合
+            {
+                // 地雷を生成
+                Vector3 spawnPosition = m_FireTransform.position + m_FireTransform.forward * 2f; // 地雷の発射位置（タンクの前方）
+                spawnPosition.y = m_FireTransform.position.y - 1f; // タンクの位置より1単位低い位置に設定（適宜調整）
+                Instantiate(MinePrefab, spawnPosition, Quaternion.identity); // 地雷を設置
 
+                // 所持数をデクリメント
+                weaponCount.DecreaseCount("Mine"); // 所持数を1減らす
+
+                // 地雷設置後のイベントを通知
+                OnMinePlaced?.Invoke(); // 地雷が設置されたことを通知
+
+                // 所持数の変化を通知
+                OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); //イベントを発生
+           }
+
+        }
     }
 }

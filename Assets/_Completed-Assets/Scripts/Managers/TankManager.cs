@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Complete
 {
     [Serializable]
-    public class TankManager
+    public class TankManager  
     {
         // This class is to manage various settings on a tank.
         // It works with the GameManager class to control how the tanks behave
@@ -17,19 +20,19 @@ namespace Complete
         [HideInInspector] public string m_ColoredPlayerText;    // A string that represents the player with their number colored to match their tank.
         [HideInInspector] public GameObject m_Instance;         // A reference to the instance of the tank when it is created.
         [HideInInspector] public int m_Wins;                    // The number of wins this player has so far.
-        
+
 
         private TankMovement m_Movement;                        // Reference to tank's movement script, used to disable and enable control.
         private TankShooting m_Shooting;                        // Reference to tank's shooting script, used to disable and enable control.
         private GameObject m_CanvasGameObject;                  // Used to disable the world space UI during the Starting and Ending phases of each round.
-
-        public event Action<int, int> OnWeaponStockChanged;     // プレイヤー番号と砲弾の所持数を通知するイベント
-        public void Setup ()
+        public event Action<int, Dictionary<string, int>> OnWeaponStockChanged; 
+        
+        public void Setup()
         {
             // Get references to the components.
-            m_Movement = m_Instance.GetComponent<TankMovement> ();
-            m_Shooting = m_Instance.GetComponent<TankShooting> ();
-            m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas> ().gameObject;
+            m_Movement = m_Instance.GetComponent<TankMovement>();
+            m_Shooting = m_Instance.GetComponent<TankShooting>();
+            m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
 
             // Set the player numbers to be consistent across the scripts.
             m_Movement.m_PlayerNumber = m_PlayerNumber;
@@ -39,7 +42,7 @@ namespace Complete
             m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
 
             // Get all of the renderers of the tank.
-            MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer> ();
+            MeshRenderer[] renderers = m_Instance.GetComponentsInChildren<MeshRenderer>();
 
             // Go through all the renderers...
             for (int i = 0; i < renderers.Length; i++)
@@ -48,54 +51,67 @@ namespace Complete
                 renderers[i].material.color = m_PlayerColor;
             }
 
-            m_Shooting.OnShellStockChanged += HandleShellStockChanged;  // TankShooting の OnShellStockChanged イベントに追加
-
+            m_Shooting.OnWeaponStockChanged += HandleWeaponStockChanged;  // TankShooting の OnShellStockChanged イベントに追加
+            m_Shooting.OnMinePlaced += HandleMinePlaced;
         }
 
-        private void HandleShellStockChanged(int newStock)
+        private void HandleWeaponStockChanged(Dictionary<string, int> weaponStock)
         {
-            OnWeaponStockChanged?.Invoke(m_PlayerNumber, newStock); // OnWeaponStockChangedイベントを発生
-
+            OnWeaponStockChanged?.Invoke(m_PlayerNumber, weaponStock); // OnWeaponStockChangedイベントを発生
+        }
+        
+        private async void HandleMinePlaced()
+        {
+            // 地雷を設置した際、一定時間タンクの動きを止める
+            await DisableTankForSeconds(2.0f);
         }
 
+        private async Task DisableTankForSeconds(float duration)
+        {
+            DisableControl();
+            await Task.Delay((int)(duration * 1000)); // 秒単位をミリ秒に変換
+            EnableControl();
+
+        }
 
         private void OnDestroy()
-        {
+        {   
+            
             if (m_Shooting != null)
             {
-                m_Shooting.OnShellStockChanged -= HandleShellStockChanged;
+                m_Shooting.OnWeaponStockChanged -= HandleWeaponStockChanged;
 
             }
         }
 
         // Used during the phases of the game where the player shouldn't be able to control their tank.
-        public void DisableControl ()
+        public void DisableControl()
         {
             m_Movement.enabled = false;
             m_Shooting.enabled = false;
 
-            m_CanvasGameObject.SetActive (false);
+            m_CanvasGameObject.SetActive(false);
         }
 
 
         // Used during the phases of the game where the player should be able to control their tank.
-        public void EnableControl ()
+        public void EnableControl()
         {
             m_Movement.enabled = true;
             m_Shooting.enabled = true;
 
-            m_CanvasGameObject.SetActive (true);
+            m_CanvasGameObject.SetActive(true);
         }
 
 
         // Used at the start of each round to put the tank into it's default state.
-        public void Reset ()
+        public void Reset()
         {
             m_Instance.transform.position = m_SpawnPoint.position;
             m_Instance.transform.rotation = m_SpawnPoint.rotation;
 
-            m_Instance.SetActive (false);
-            m_Instance.SetActive (true);
+            m_Instance.SetActive(false);
+            m_Instance.SetActive(true);
         }
     }
 }

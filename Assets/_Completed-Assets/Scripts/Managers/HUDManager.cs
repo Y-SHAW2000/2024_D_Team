@@ -7,16 +7,16 @@ namespace Complete
 {
     public class HudManager : MonoBehaviour
     {
-        [SerializeField] private PlayerStockArea player1StockArea; // Player1 ‚Ì HUD   PlayerStockArea
-        [SerializeField] private PlayerStockArea player2StockArea; // Player2 ‚Ì HUD
-        [SerializeField] private Complete.GameManager gameManager; // GameManager ‚Ö‚ÌQÆ
-        [SerializeField] private Complete.TankManager tankManager; //TankManager‚Ö‚ÌQÆ
+        [SerializeField] private PlayerStockArea player1StockArea; // Player1 ï¿½ï¿½ HUD   PlayerStockArea
+        [SerializeField] private PlayerStockArea player2StockArea; // Player2 ï¿½ï¿½ HUD
+        [SerializeField] private Complete.GameManager gameManager; // GameManager ï¿½Ö‚ÌQï¿½ï¿½
+        [SerializeField] private Complete.TankManager tankManager; //TankManagerï¿½Ö‚ÌQï¿½ï¿½
 
         private void Start()
         {
             if (gameManager != null)
             {
-                gameManager.OnGameStateChanged += HandleGameStateChanged; //ƒCƒxƒ“ƒg‚Ì“o˜^
+                gameManager.OnGameStateChanged += HandleGameStateChanged; //ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì“oï¿½^
                 foreach (var tank in gameManager.m_Tanks)
                 {
                     tank.OnWeaponStockChanged += UpdatePlayerStockArea;
@@ -24,7 +24,7 @@ namespace Complete
             }
         }
 
-        private void OnDestroy() //ƒCƒxƒ“ƒg‚Ì‰ğœ
+        private void OnDestroy() //ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì‰ï¿½ï¿½ï¿½
         {
             if (gameManager != null)
             {
@@ -32,7 +32,7 @@ namespace Complete
             }
         }
 
-        private void HandleGameStateChanged(Complete.GameManager.GameState gameState)    // ƒQ[ƒ€‚Ìó‘Ô‚É‰‚¶‚Ä HUD ‚Ì•\¦/”ñ•\¦‚ğØ‚è‘Ö‚¦‚é
+        private void HandleGameStateChanged(Complete.GameManager.GameState gameState)    // ï¿½Qï¿½[ï¿½ï¿½ï¿½Ìï¿½Ô‚É‰ï¿½ï¿½ï¿½ï¿½ï¿½ HUD ï¿½Ì•\ï¿½ï¿½/ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½Ö‚ï¿½ï¿½ï¿½
         {
             if (gameState == Complete.GameManager.GameState.RoundPlaying)
             {
@@ -45,15 +45,15 @@ namespace Complete
                 player2StockArea.gameObject.SetActive(false);
             }
         }
-        private void UpdatePlayerStockArea(int playerNumber, int newStock)  // ƒvƒŒƒCƒ„[”Ô†‚É‰‚¶‚Ä HUD ‚Ì–C’eƒXƒgƒbƒN”‚ğXV
+        private void UpdatePlayerStockArea(int playerNumber, Dictionary<string, int> weaponStock)  // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ôï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ HUD ï¿½Ì–Cï¿½eï¿½Xï¿½gï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½V
         {
             if (playerNumber == 1)
             {
-                player1StockArea.UpdatePlayerStockArea(newStock);
+                player1StockArea.UpdatePlayerStockArea(weaponStock);
             }
             else if (playerNumber == 2)
             {
-                player2StockArea.UpdatePlayerStockArea(newStock);
+                player2StockArea.UpdatePlayerStockArea(weaponStock);
             }
         }
     }
