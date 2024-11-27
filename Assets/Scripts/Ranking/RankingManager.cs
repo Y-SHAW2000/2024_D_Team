@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -14,6 +14,18 @@ public class RankingManager : MonoBehaviour
         public float WinRate;    
         public int Wins;        
         public int Losses;      
+    }
+
+    public GameObject rankBoard;
+
+    public void Rank(bool isWinner)
+    {
+        rankBoard.SetActive(true);
+
+        transform.GetComponent<MatchResultManager>().UpdatePlayerStats(isWinner);
+
+        transform.GetComponent<RankingDialog>().ShowRanking(GetTop10Ranking(), GetCurrentPlayerStats());
+
     }
 
     public List<PlayerStats> GetTop10Ranking()
@@ -36,7 +48,7 @@ public class RankingManager : MonoBehaviour
 
                 statsList.Add(new PlayerStats
                 {
-                    UserId = player.UserId,
+                    UserId = PhotonNetwork.AuthValues.UserId,
                     UserName = player.NickName,
                     Wins = wins,
                     Losses = losses,
@@ -52,6 +64,41 @@ public class RankingManager : MonoBehaviour
             statsList[i].Rank = i + 1;
         }
 
-        return statsList.Take(10).ToList();
+        var rankedPlayers = statsList.Take(10).ToList();
+
+        if (rankedPlayers.Count == 0)
+        {
+            Debug.LogWarning("No players meet the ranking criteria. Returning only the local player's data.");
+            var currentPlayerStats = GetCurrentPlayerStats();
+
+            if (currentPlayerStats != null)
+            {
+                return new List<PlayerStats> { currentPlayerStats };
+            }
+
+            return new List<PlayerStats>();
+        }
+        return rankedPlayers;
+    }
+
+    public PlayerStats GetCurrentPlayerStats()
+    {
+        var player = PhotonNetwork.LocalPlayer;
+
+        int wins = player.CustomProperties.ContainsKey(PlayerStatsKeys.Wins) ? (int)player.CustomProperties[PlayerStatsKeys.Wins] : 0;
+        int losses = player.CustomProperties.ContainsKey(PlayerStatsKeys.Losses) ? (int)player.CustomProperties[PlayerStatsKeys.Losses] : 0;
+        int matches = player.CustomProperties.ContainsKey(PlayerStatsKeys.Matches) ? (int)player.CustomProperties[PlayerStatsKeys.Matches] : 0;
+
+        float winRate = matches > 0 ? wins / (float)matches : 0;
+
+        return new PlayerStats
+        {
+            Rank = 1,
+            UserId = PhotonNetwork.AuthValues.UserId,
+            UserName = player.NickName,
+            WinRate = winRate,
+            Wins = wins,
+            Losses = losses
+        };
     }
 }
