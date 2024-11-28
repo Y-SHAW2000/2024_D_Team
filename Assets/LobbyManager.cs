@@ -61,12 +61,40 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         isReady = !isReady;
         photonView.RPC("NotifyReady", RpcTarget.Others, isReady);
         UpdateReadyStatus();
+        // 自分が準備完了した場合、相手が準備完了かチェックして対戦画面に遷移
+        if (isReady && PhotonNetwork.IsMasterClient)
+        {
+            CheckIfBothReady();
+        }
     }
 
     [PunRPC]
     private void NotifyReady(bool opponentReady)
     {
         readyStatusText.text = opponentReady ? "Opponent is Ready!" : "Opponent is Not Ready";
+        // もし両方のプレイヤーが準備完了なら、ネットワーク対戦画面に遷移
+        if (isReady && opponentReady && PhotonNetwork.IsMasterClient)
+        {
+            StartMatch();
+        }
+    }
+    private void StartMatch()
+    {
+        // ここで対戦画面に遷移する
+        SceneManager.LoadScene("_Complete-Game");
+    }
+    private void CheckIfBothReady()
+    {
+        // 現在の準備状態が相手と一致するか確認
+        photonView.RPC("CheckReadyStatus", RpcTarget.Others, isReady);
+    }
+    [PunRPC]
+    private void CheckReadyStatus(bool playerReady)
+    {
+        if (playerReady && isReady)
+        {
+            StartMatch();
+        }
     }
 
     private void UpdateReadyStatus()
