@@ -65,23 +65,17 @@ namespace Complete
 
         private void SpawnAllTanks()
         {
-            // ... create them, set their player number and references needed for control.
-            m_Tanks[0].m_Instance =
-                Instantiate(m_TankPrefab_for_TPS, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation) as GameObject;
-            m_Tanks[0].m_PlayerNumber = 1;
-            m_Tanks[0].Setup();
-            m_Tanks[0].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + "1" +"Slider").GetComponent<Slider>();
-
-            // For all the tanks...
-            for (int i = 1; i < m_Tanks.Length; i++)
+            // PhotonNetwork.Instantiateを使ってタンクをネットワーク上にスポーンさせる
+            for (int i = 0; i < m_Tanks.Length; i++)
             {
-                // ... create them, set their player number and references needed for control.
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+                Vector3 spawnPosition = m_Tanks[i].m_SpawnPoint.position;
+                Quaternion spawnRotation = m_Tanks[i].m_SpawnPoint.rotation;
+
+                // 自分のタンクだけをPhotonでインスタンス化
+                GameObject tankInstance = PhotonNetwork.Instantiate(m_TankPrefab.name, spawnPosition, spawnRotation);
+                m_Tanks[i].m_Instance = tankInstance;
                 m_Tanks[i].m_PlayerNumber = i + 1;
                 m_Tanks[i].Setup();
-                m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i+1) + "Slider").GetComponent<Slider>();
-
             }
         }
 
@@ -119,7 +113,7 @@ namespace Complete
             if (m_GameWinner != null)
             {
                 // If there is a game winner, restart the level.
-                SceneManager.LoadScene(Scenenames.TitleScene);
+                SceneManager.LoadScene("LobbyScene");
             }
             else
             {

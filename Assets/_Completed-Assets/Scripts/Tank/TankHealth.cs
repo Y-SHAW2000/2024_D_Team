@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 namespace Complete
 {
@@ -17,10 +18,11 @@ namespace Complete
         private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
         private float m_CurrentHealth;                      // How much health the tank currently has.
         private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
-
+        private PhotonView photonView;      
 
         private void Awake ()
         {
+             photonView = GetComponent<PhotonView>();
             // Instantiate the explosion prefab and get a reference to the particle system on it.
             m_ExplosionParticles = Instantiate (m_ExplosionPrefab).GetComponent<ParticleSystem> ();
 
@@ -50,19 +52,29 @@ namespace Complete
             SetHealthUI();
         }
 
-
-        public void TakeDamage (float amount)
+        // ダメージを受けた際、HPゲージだけを他のプレイヤーと同期
+        [PunRPC]
+        public void UpdateOpponentHealth(float health)
         {
-            // Reduce current health by the amount of damage done.
-            m_CurrentHealth -= amount;
+            // 受け取った相手のHPをスライダーに反映
+            m_Slider.value = health;
+            SetHealthUI(); // ゲージの色なども更新
+        }
 
-            // Change the UI elements appropriately.
-            SetHealthUI ();
-
-            // If the current health is at or below zero and it has not yet been registered, call OnDeath.
-            if (m_CurrentHealth <= 0f && !m_Dead)
+        [PunRPC]
+        public void TakeDamage(float amount)
+        {
+            if (photonView.IsMine) // 自分の戦車に対してのみダメージを適用
             {
-                OnDeath ();
+                m_CurrentHealth -= amount;
+                
+                // 自分のHPゲージを更新したら、相手に通知
+                photonView.RPC("UpdateOpponentHealth", RpcTarget.Others, m_CurrentHealth);
+                if (m_CurrentHealth <= 0f && !m_Dead)
+                {
+                    m_Dead = true;
+                    photonView.RPC("OnDeath", RpcTarget.All); // 全員に死を通知
+                }
             }
         }
 
@@ -76,12 +88,12 @@ namespace Complete
             m_FillImage.color = Color.Lerp (m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
         }
 
-
+        [PunRPC]
         private void OnDeath ()
         {
             // Set the flag so that this function is only called once.
             m_Dead = true;
-
+            photonView.RPC("DeactivateTank", RpcTarget.All);
             // Move the instantiated explosion prefab to the tank's position and turn it on.
             m_ExplosionParticles.transform.position = transform.position;
             m_ExplosionParticles.gameObject.SetActive (true);
@@ -94,6 +106,11 @@ namespace Complete
 
             // Turn the tank off.
             gameObject.SetActive (false);
+        }
+        [PunRPC]
+        private void DeactivateTank()
+        {
+            gameObject.SetActive(false);
         }
     }
 }
