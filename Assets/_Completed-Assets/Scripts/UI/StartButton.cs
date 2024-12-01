@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class StartButton : MonoBehaviour
 {
 
-    public LoginBonusManager loginBonusManager;
+    private LoginBonusManager loginBonusManager;
     
     [SerializeField]
     private Button startButton;

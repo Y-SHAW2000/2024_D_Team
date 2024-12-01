@@ -1,4 +1,5 @@
 using System;
+
 using UnityEngine;
 
 public class LoginBonusManager : MonoBehaviour
@@ -21,7 +22,7 @@ public class LoginBonusManager : MonoBehaviour
 
     public bool IsNewLogin()
     {
-        var playerinfo = userStateManager.CurrentPlayer; // 現在のプレイヤー情報を取得
+        var playerinfo = userStateManager.CurrentPlayer;
         if (playerinfo == null)
         {
             Debug.LogError("プレイヤー情報が設定されていません！");
@@ -41,6 +42,9 @@ public class LoginBonusManager : MonoBehaviour
             // ログイン日数を更新
             playerinfo.Loginday = (playerinfo.Loginday < 7) ? playerinfo.Loginday + 1 : 1;
 
+            // 更新後のプレイヤーデータを保存
+            userStateManager.SavePlayerinfo(playerinfo);
+
             LastLoginTime = currentJapanDate; // 最終ログインを更新
             return true;
         }
@@ -50,6 +54,23 @@ public class LoginBonusManager : MonoBehaviour
     }
     public void UpdateLoginData()
     {
+        var playerinfo = userStateManager.CurrentPlayer; // 現在のプレイヤー情報を取得
+        if (playerinfo == null)
+        {
+            Debug.LogError("プレイヤー情報が設定されていません！");
+            return;
+        }
 
+        // 日本時間の現在の日付を取得
+        DateTime currentJapanDate = DateTime.UtcNow.AddHours(9).Date;
+
+        // 最終ログイン時間を更新
+        playerinfo.LastLoginTime = currentJapanDate;
+
+        // 更新後のプレイヤーデータを保存
+        userStateManager.SavePlayerinfo(playerinfo);
+
+        Debug.Log($"ログインデータが更新されました: {currentJapanDate}");
     }
+
 }
