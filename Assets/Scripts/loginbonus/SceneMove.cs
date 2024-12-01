@@ -11,18 +11,18 @@ public class SceneMove : MonoBehaviour
     {
         if (loginBonusManager.IsNewLogin())
         {
-            SceneManager.LoadScene("LoginBonusScene"); // ログインボーナスへ
+            SceneManager.LoadScene(Scenenames.LoginBonusScene);// ログインボーナスへ
         }
         else
         {
-            SceneManager.LoadScene("HomeScene"); // ホームへ
+            SceneManager.LoadScene(Scenenames.HomeScene); // ホームへ
         }
     }
 
     public void ReceiveBonus()
     {
         loginBonusManager.UpdateLoginData();
-        SceneManager.LoadScene("HomeScene"); // ホーム画面へ
+        SceneManager.LoadScene(Scenenames.HomeScene);// ホーム画面へ
     }
 }
 
