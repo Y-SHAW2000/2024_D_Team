@@ -9,6 +9,7 @@ public class StartButton : MonoBehaviour
 {
 
     private LoginBonusManager loginBonusManager;
+
     
     [SerializeField]
     private Button startButton;

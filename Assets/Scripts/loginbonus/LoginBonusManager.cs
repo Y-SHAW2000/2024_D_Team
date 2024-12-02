@@ -1,5 +1,4 @@
 using System;
-
 using UnityEngine;
 
 public class LoginBonusManager : MonoBehaviour
@@ -72,5 +71,6 @@ public class LoginBonusManager : MonoBehaviour
 
         Debug.Log($"ログインデータが更新されました: {currentJapanDate}");
     }
+
 
 }
