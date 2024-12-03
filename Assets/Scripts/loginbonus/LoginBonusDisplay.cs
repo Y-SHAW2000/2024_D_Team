@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,18 +10,25 @@ public class LoginBonusDisplay : MonoBehaviour
     // 各ログインボーナス日を表すテキスト
     public List<Text> dayTexts;
 
-    void Start()
+    IEnumerator Start()
     {
         userStateManager = FindObjectOfType<UserStateManager>();
         if (userStateManager == null)
         {
             Debug.LogError("UserStateManager が見つかりません！");
-            return;
+            yield break;
         }
 
-        Debug.Log("UserStateManager を取得しました。");
+        while (userStateManager.CurrentPlayer == null)
+        {
+            Debug.Log("LoginBonusDisplay: CurrentPlayer が設定されるのを待機中...");
+            yield return null;
+        }
+
+        Debug.Log("LoginBonusDisplay: CurrentPlayer を認識しました！");
         DisplayLoginBonusStatus();
     }
+
 
     private void DisplayLoginBonusStatus()
     {
