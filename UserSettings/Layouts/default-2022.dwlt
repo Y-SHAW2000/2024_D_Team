@@ -268,8 +268,8 @@ MonoBehaviour:
     y: 0
     width: 827.5
     height: 450.5
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 16}
@@ -395,7 +395,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Photon/PhotonUnityNetworking/Resources
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -403,16 +403,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Photon/PhotonUnityNetworking/Resources
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\kiyos\2024_D_Team
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 551.5}
-    m_SelectedIDs: a6770000
-    m_LastClickedID: 30630
-    m_ExpandedIDs: 0000000030770000327700003477000036770000387700003a7700003c7700003e77000040770000427700004477000046770000487700004a7700004c770000
+    m_SelectedIDs: 4a770000
+    m_LastClickedID: 30538
+    m_ExpandedIDs: 000000003a7700003c7700003e77000040770000427700004477000046770000487700004a7700004c7700004e77000050770000527700005477000056770000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -440,7 +440,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000030770000327700003477000036770000387700003a7700003c7700003e77000040770000427700004477000046770000487700004a7700004c770000
+    m_ExpandedIDs: 000000003a7700003c7700003e77000040770000427700004477000046770000487700004a7700004c7700004e77000050770000527700005477000056770000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000107a0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -584,7 +584,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 4c97fdffdc97fdffdca1fdffe6a1fdfff8a1fdff0aa2fdff36a2fdfff4bbfdff82bcfdff82c6fdff8cc6fdff9ec6fdffb0c6fdffdcc6fdff4c08feff0026feff6682feff2894feffc29ffeffeebafeff7ebbfeff7ec5feff88c5feff9ac5feffacc5feffd8c5feffaefffeff3c00ffff620affff900affffc60afffffc0affff4c0bffff08ebfffff2edffff58f9fffff2faffff1a7500006a320100
+      m_ExpandedIDs: 3ea9fdffcca9fdffccb3fdffd6b3fdffe8b3fdfffab3fdff26b4fdff403ffeff644cfeff8e5bfeffba78feffb89bfeff42a9feffbeb8feff9ee4feff44f6feffc241fffff65dfffffe81ffff8492ffffa49dffffcaaffffff2faffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
