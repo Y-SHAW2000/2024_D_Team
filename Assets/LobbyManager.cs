@@ -66,7 +66,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private void OnReadyPressed()
     {
         isReady = !isReady;
-
+        photonView.RPC("NotifyReady", RpcTarget.Others, isReady);
         // 自分の Ready 状態をルームのカスタムプロパティに保存
         Hashtable playerProperties = new Hashtable
         {
@@ -81,22 +81,36 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         CheckReadyStatus();
     }
 
+    [PunRPC]
+    private void NotifyReady(bool opponentReady)
+    {
+        readyStatusText.text = opponentReady ? "Opponent is Ready!" : "Opponent is Not Ready";
+    }
     private void CheckReadyStatus()
     {
+        bool allPlayersReady = true;
+
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             if (player.CustomProperties.TryGetValue("IsReady", out object isPlayerReady))
             {
-                if ((bool)isPlayerReady)
+                if (!(bool)isPlayerReady)
                 {
-                    Debug.Log("At least one player is ready! Moving to battle scene.");
-                    SceneManager.LoadScene("_Complete-Game");
-                    return;
+                    allPlayersReady = false; // 1人でも準備ができていないプレイヤーがいれば、ゲームシーンに遷移しない
+                    break;
                 }
             }
         }
 
-        Debug.Log("No players are ready.");
+        if (allPlayersReady)
+        {
+            Debug.Log("Both players are ready! Moving to battle scene.");
+            SceneManager.LoadScene("_Complete-Game");
+        }
+        else
+        {
+            Debug.Log("Not all players are ready.");
+        }
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
