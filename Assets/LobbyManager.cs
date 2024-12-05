@@ -4,6 +4,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
@@ -19,7 +20,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        //PhotonNetwork.ConnectUsingSettings();
         // "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
         PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions(), TypedLobby.Default);
         leaveButton.onClick.AddListener(OnLeaveLobby);
@@ -96,8 +97,20 @@ private void SendStamp(string stampName)
         CancelInvoke(nameof(HideStamp));
         Invoke(nameof(HideStamp), 5f);
     }
+    private IEnumerator FadeOutStamp(Image stampDisplay)
+    {
+        for (float alpha = 1f; alpha >= 0; alpha -= 0.1f)
+        {
+            Color color = stampDisplay.color;
+            color.a = alpha;
+            stampDisplay.color = color;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     private void HideStamp()
     {
-        playerStampDisplay.color = new Color(1, 1, 1, 0); // フェードアウト
+        StartCoroutine(FadeOutStamp(playerStampDisplay));
     }
+
 }
