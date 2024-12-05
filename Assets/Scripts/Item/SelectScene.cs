@@ -20,7 +20,7 @@ public class SelectScene : MonoBehaviour
     private void OnClicked()
     {
 
-        SceneManager.LoadScene("ItemScene");
+        SceneManager.LoadScene(Scenenames.ItemScene);
 
     }
     void Update()

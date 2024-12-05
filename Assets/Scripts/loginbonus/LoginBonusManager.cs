@@ -4,7 +4,6 @@ using UnityEngine;
 public class LoginBonusManager : MonoBehaviour
 {
     private UserStateManager userStateManager;
-
     public DateTime LastLoginTime { get; private set; }
 
     void Start()
@@ -15,7 +14,6 @@ public class LoginBonusManager : MonoBehaviour
             Debug.LogError("UserStateManager が見つかりません！");
             return;
         }
-
         Debug.Log("UserStateManager を取得しました。");
     }
 
@@ -45,11 +43,14 @@ public class LoginBonusManager : MonoBehaviour
             userStateManager.SavePlayerinfo(playerinfo);
 
             LastLoginTime = currentJapanDate; // 最終ログインを更新
+
             return true;
         }
-
-        Debug.Log($"本日は既にログイン済みです: 前回ログイン {playerinfo.LastLoginTime}, 今日 {currentJapanDate}");
-        return false;
+        else
+        {
+            Debug.Log($"本日は既にログイン済みです: 前回ログイン {playerinfo.LastLoginTime}, 今日 {currentJapanDate}");
+            return false;
+        }
     }
     public void UpdateLoginData()
     {

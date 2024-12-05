@@ -31,6 +31,7 @@ public class DialogManager : MonoBehaviour
             dialogText.text = $"\n\n\nƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½";
             dialogPanel.SetActive(true);
         }
+
     }
 
     public void CloseDialog()
