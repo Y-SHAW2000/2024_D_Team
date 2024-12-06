@@ -64,23 +64,22 @@ public class ItemInfo : MonoBehaviour
         if (playerinfo != null)
         {
             loginDays = playerinfo.Loginday;
-            stamina = playerinfo.StaminaItem;
-            armor = playerinfo.ArmorItem;
+
 
             // ログイン日数に応じた処理
             if (loginDays % 2 == 0) // 偶数の場合
             {
-                stamina++;
-                Debug.Log($"ログイン日数が偶数なので StaminaItem を +1 しました。現在の StaminaItem: {stamina}");
+                playerinfo.StaminaItem += 1;
+                Debug.Log($"ログイン日数が偶数なので StaminaItem を +1 しました。現在の StaminaItem: {playerinfo.StaminaItem}");
             }
             else // 奇数の場合
             {
-                armor++;
-                Debug.Log($"ログイン日数が奇数なので ArmorItem を +1 しました。現在の ArmorItem: {armor}");
+                playerinfo.ArmorItem += 1;
+                Debug.Log($"ログイン日数が奇数なので ArmorItem を +1 しました。現在の ArmorItem: {playerinfo.ArmorItem}");
             }
             userStateManager.SavePlayerinfo(playerinfo);　//データの更新
-            Debug.Log($"更新しましたスタミナ: {stamina}アーマー: {armor}");
-            UpdateText(armor, stamina);
+            Debug.Log($"更新しましたスタミナ: {playerinfo.StaminaItem}アーマー: {playerinfo.ArmorItem}");
+            UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
         }
         else
         {

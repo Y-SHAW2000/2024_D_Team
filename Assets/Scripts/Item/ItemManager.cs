@@ -31,20 +31,18 @@ public class ItemManager : MonoBehaviour
 
         if (playerinfo != null)
         {
-            stamina = playerinfo.StaminaItem;
-            armor = playerinfo.ArmorItem;
 
-            if (ItemButtonGameObject.name == "Defence_Use_Button" && armor >= 1)
+            if (ItemButtonGameObject.name == "Defence_Use_Button" && playerinfo.ArmorItem >= 1)
             {
                 playerinfo.ArmorItem -= 1;
             }
-            if (ItemButtonGameObject.name == "Stamina_Use_Button" && armor >= 1)
+            if (ItemButtonGameObject.name == "Stamina_Use_Button" && playerinfo.StaminaItem >= 1)
             {
                 playerinfo.StaminaItem -= 1;
             }
-            Debug.Log($"アイテムを使用したarmor : {armor} stamina: {stamina}");
+            Debug.Log($"アイテムを使用したarmor : {playerinfo.ArmorItem} stamina: {playerinfo.StaminaItem}");
         }
         userStateManager.SavePlayerinfo(playerinfo); //データの更新
-        iteminfo.UpdateText(armor, stamina);
+        iteminfo.UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
     }
 }

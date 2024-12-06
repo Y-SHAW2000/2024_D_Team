@@ -13,6 +13,7 @@ public class UserStateManager : MonoBehaviour
         public int StaminaItem;
         public int ArmorItem;
         public DateTime LastLoginTime;
+        public DateTime PreviousLoginTime; // 前回のログイン日時に変更
         public int Loginday;
 
         public Playerinfo(string userId, string userName)
@@ -22,6 +23,7 @@ public class UserStateManager : MonoBehaviour
             StaminaItem = 0;
             ArmorItem = 0;
             LastLoginTime = DateTime.MinValue; // 初期値
+            PreviousLoginTime = DateTime.MinValue; // 初期値
             Loginday = 0;
         }
     }
@@ -37,7 +39,7 @@ public class UserStateManager : MonoBehaviour
 
         currentPlayer = LoadPlayerinfo(userId) ?? CreatePlayer(userId, userName);
 
-        Debug.Log($"[START] プレイヤー情報: ID: {currentPlayer.UserId}, Name: {currentPlayer.UserName}, LastLogin: {currentPlayer.LastLoginTime}, Loginday: {currentPlayer.Loginday}");
+        Debug.Log($"[START] プレイヤー情報: ID: {currentPlayer.UserId}, Name: {currentPlayer.UserName}, LastLogin: {currentPlayer.LastLoginTime}, PreviousLogin: {currentPlayer.PreviousLoginTime}, Loginday: {currentPlayer.Loginday}");
 
         SavePlayerinfo(currentPlayer); // ゲーム開始時に一度保存
     }
@@ -55,10 +57,11 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.SetInt($"Player_{player.UserId}_StaminaItem", player.StaminaItem);
         PlayerPrefs.SetInt($"Player_{player.UserId}_ArmorItem", player.ArmorItem);
         PlayerPrefs.SetString($"Player_{player.UserId}_LastLoginTime", player.LastLoginTime.ToString("o"));
+        PlayerPrefs.SetString($"Player_{player.UserId}_PreviousLoginTime", player.PreviousLoginTime.ToString("o")); // 保存時に変更
         PlayerPrefs.SetInt($"Player_{player.UserId}_Loginday", player.Loginday);
         PlayerPrefs.Save();
 
-        Debug.Log($"[SAVE] プレイヤー情報を保存しました: ID: {player.UserId}, Name: {player.UserName}, LastLogin: {player.LastLoginTime}, Loginday: {player.Loginday}");
+        Debug.Log($"[SAVE] プレイヤー情報を保存しました: ID: {player.UserId}, Name: {player.UserName}, LastLogin: {player.LastLoginTime}, PreviousLogin: {player.PreviousLoginTime}, Loginday: {player.Loginday}");
     }
 
     private Playerinfo LoadPlayerinfo(string userId)
@@ -69,16 +72,19 @@ public class UserStateManager : MonoBehaviour
             int staminaItem = PlayerPrefs.GetInt($"Player_{userId}_StaminaItem");
             int armorItem = PlayerPrefs.GetInt($"Player_{userId}_ArmorItem");
             string lastLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_LastLoginTime");
+            string previousLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_PreviousLoginTime"); // 読み込み時に変更
             DateTime lastLoginTime = DateTime.Parse(lastLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            DateTime previousLoginTime = DateTime.Parse(previousLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind);
             int loginday = PlayerPrefs.GetInt($"Player_{userId}_Loginday");
 
-            Debug.Log($"[LOAD] プレイヤー情報を読み込みました: ID: {userId}, Name: {userName}, LastLogin: {lastLoginTime}, Loginday: {loginday}");
+            Debug.Log($"[LOAD] プレイヤー情報を読み込みました: ID: {userId}, Name: {userName}, LastLogin: {lastLoginTime}, PreviousLogin: {previousLoginTime}, Loginday: {loginday}");
 
             return new Playerinfo(userId, userName)
             {
                 StaminaItem = staminaItem,
                 ArmorItem = armorItem,
                 LastLoginTime = lastLoginTime,
+                PreviousLoginTime = previousLoginTime, // 初期化時に変更
                 Loginday = loginday
             };
         }
@@ -94,6 +100,7 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.DeleteKey($"Player_{userId}_ArmorItem");
         PlayerPrefs.DeleteKey($"Player_{userId}_LastLoginTime");
         PlayerPrefs.DeleteKey($"Player_{userId}_Loginday");
+        PlayerPrefs.DeleteKey($"Player_{userId}_PreviousLoginTime"); // キーを変更
         PlayerPrefs.Save();
 
         Debug.Log($"Playerinfo をリセットしました: ID = {userId}");
@@ -101,5 +108,4 @@ public class UserStateManager : MonoBehaviour
         currentPlayer = LoadPlayerinfo(userId) ?? CreatePlayer(userId, "DefaultName"); // 必要に応じてデフォルト名
         Debug.Log($"Playerinfo をリセット後に再初期化: ID = {currentPlayer.UserId}, Name = {currentPlayer.UserName}");
     }
-
 }

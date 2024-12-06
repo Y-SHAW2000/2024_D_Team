@@ -5,6 +5,7 @@ public class LoginBonusManager : MonoBehaviour
 {
     private UserStateManager userStateManager;
     public DateTime LastLoginTime { get; private set; }
+    public DateTime PreviousLoginTime { get; private set; }
 
     void Start()
     {
@@ -33,7 +34,9 @@ public class LoginBonusManager : MonoBehaviour
         if (playerinfo.LastLoginTime.Date != currentJapanDate)
         {
             Debug.Log($"新しいログインです: 前回ログイン {playerinfo.LastLoginTime}, 今日 {currentJapanDate}");
+            playerinfo.PreviousLoginTime = playerinfo.LastLoginTime; //前回のログインを記録
             playerinfo.LastLoginTime = currentJapanDate; // 最終ログインを更新
+
             Debug.Log("最終ログイン日を更新" + playerinfo.LastLoginTime);
 
             // ログイン日数を更新
@@ -65,6 +68,7 @@ public class LoginBonusManager : MonoBehaviour
         DateTime currentJapanDate = DateTime.UtcNow.AddHours(9).Date;
 
         // 最終ログイン時間を更新
+        playerinfo.PreviousLoginTime = playerinfo.LastLoginTime;
         playerinfo.LastLoginTime = currentJapanDate;
 
         // 更新後のプレイヤーデータを保存
