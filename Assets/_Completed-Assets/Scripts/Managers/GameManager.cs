@@ -60,35 +60,61 @@ namespace Complete
 
         private void SpawnAllTanks()
         {
+            int localPlayerNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+
+            // ローカルプレイヤーが1番の場合のみ、タンク0を生成
             for (int i = 0; i < m_Tanks.Length; i++)
             {
-                // PhotonNetwork.Instantiate の戻り値を確認
-                GameObject tankInstance = PhotonNetwork.Instantiate(m_TankPrefab_for_TPS.name, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
-                
-                if (tankInstance != null)
+                // 自分のタンクを生成
+                if (localPlayerNumber == i + 1)
                 {
-                    m_Tanks[i].m_Instance = tankInstance;
-                    m_Tanks[i].m_PlayerNumber = i + 1;
-                    m_Tanks[i].Setup();
-                    m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i + 1) + "Slider").GetComponent<Slider>();
+                    // すでにタンクが生成されている場合はスキップ
+                    if (m_Tanks[i].m_Instance == null)
+                    {
+                        GameObject tankInstance = PhotonNetwork.Instantiate(m_TankPrefab_for_TPS.name, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+                        if (tankInstance != null)
+                        {
+                            m_Tanks[i].m_Instance = tankInstance;
+                            m_Tanks[i].m_PlayerNumber = i + 1;
+                            m_Tanks[i].Setup();
+                            m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i + 1) + "Slider").GetComponent<Slider>();
+                        }
+                        else
+                        {
+                            Debug.LogError("Failed to instantiate tank for player " + (i + 1));
+                        }
+                    }
                 }
                 else
                 {
-                    Debug.LogError("Failed to instantiate tank for player " + (i + 1));
+                    // 対戦相手のタンクが生成されている場合、同期を確認
+                    if (m_Tanks[i].m_Instance == null)
+                    {
+                        // 対戦相手がタンクを生成しているかチェック
+                        GameObject tankInstance = PhotonNetwork.Instantiate(m_TankPrefab_for_TPS.name, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+                        if (tankInstance != null)
+                        {
+                            m_Tanks[i].m_Instance = tankInstance;
+                            m_Tanks[i].m_PlayerNumber = i + 1;
+                            m_Tanks[i].Setup();
+                            m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i + 1) + "Slider").GetComponent<Slider>();
+                        }
+                        else
+                        {
+                            Debug.LogError("Failed to instantiate tank for opponent " + (i + 1));
+                        }
+                    }
                 }
             }
         }
+
 
 
         private void SetCameraTargets()
         {
             // カメラのターゲットとなるタンクの位置を設定
             Transform[] targets = new Transform[m_Tanks.Length];
-            for (int i = 0; i < targets.Length; i++)
-            {
-                targets[i] = m_Tanks[i].m_Instance.transform;
-            }
-            //m_CameraControl.m_Targets = targets;
+            m_CameraControl.m_Targets = targets;
         }
 
         // ゲームループ。各フェーズ（RoundStarting, RoundPlaying, RoundEnding）を順番に実行
