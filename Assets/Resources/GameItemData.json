@@ -3,7 +3,7 @@
         {
             "name": "戦車の装甲強化",
             "description": "戦車のHPを2倍にしました。",
-            "effect": 2,
+            "effect": 100,
             "max": 1
         },
         {

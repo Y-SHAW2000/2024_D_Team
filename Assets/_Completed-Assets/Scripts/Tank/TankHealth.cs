@@ -1,4 +1,5 @@
 ﻿
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace Complete
     {
         public float m_StartingHealth = 100f;               // The amount of health each tank starts with.
         public Slider m_Slider;                             // The slider to represent how much health the tank currently has.
+        public Slider m_Slider200;                             //アイテム使用後ついかのHP
         public Image m_FillImage;                           // The image component of the slider.
         public Color m_FullHealthColor = Color.green;       // The color the health bar will be when on full health.
         public Color m_ZeroHealthColor = Color.red;         // The color the health bar will be when on no health.
@@ -19,7 +21,7 @@ namespace Complete
         private float m_CurrentHealth;                      // How much health the tank currently has.
         private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
         private MasterData.JsonReaderFromResourcesFolder jsonReader;
-
+        private int damage;
 
         private void Awake ()
         {
@@ -39,9 +41,10 @@ namespace Complete
         {
 
             Debug.Log("tankhealth開始");
-            m_Slider.maxValue = m_StartingHealth;
-            m_Slider.value = m_Slider.maxValue;
+            m_Slider.maxValue = m_StartingHealth; //Maxは初期値
+            m_Slider.value = m_Slider.maxValue;　//初期値を設定
             CheckItemUse(); //アイテムを使ったかの確認
+
         }
 
 
@@ -56,29 +59,61 @@ namespace Complete
         }
 
 
-        public void TakeDamage (float amount)
+        public void TakeDamage(float amount)
         {
-            // Reduce current health by the amount of damage done.
-            m_CurrentHealth -= amount;
+            // アーマーがある場合、まずアーマーにダメージを適用
+            if (m_Slider200.maxValue > 0 && m_Slider200.value > 0)
+            {
+                if(m_Slider200.value > amount)
+                {
+                    m_Slider200.value -= amount;
+                    Debug.Log($"今のアーマーは {m_Slider200.value}, 受けたダメージは: {amount}, currenthealthは {m_CurrentHealth}");
+                }
+                // アーマーが0未満になった場合、残りのダメージを体力に適用
+                else if (m_Slider200.value < amount)
+                {
+                    float remainingDamage = Mathf.Abs(m_Slider200.value); // 余剰ダメージを計算
+                    m_Slider200.value = 0; // アーマーを0にする
+                    m_CurrentHealth -= remainingDamage; // 残りのダメージを体力に適用
+                    Debug.Log($"受けたダメージは: {amount} アーマーが破壊され、残りダメージを適用:剰余ダメージ:{remainingDamage} currenthealthは {m_CurrentHealth}");
+                }
+                Debug.Log($"今のアーマーは {m_Slider200.value}, 受けたダメージは: {amount}, currenthealthは {m_CurrentHealth}");
 
-            // Change the UI elements appropriately.
-            SetHealthUI ();
+            }
+            else
+            {
+                // アーマーがない場合は直接体力にダメージを適用
+                m_CurrentHealth -= amount;
+                Debug.Log($"アーマーなし: 直接体力にダメージ適用。受けたダメージは: {amount}currenthealthは {m_CurrentHealth}");
+            }
 
-            // If the current health is at or below zero and it has not yet been registered, call OnDeath.
+            // HPバーの更新
+            SetHealthUI();
+
+            // 体力が0以下になった場合の処理
             if (m_CurrentHealth <= 0f && !m_Dead)
             {
-                OnDeath ();
+                OnDeath();
             }
         }
 
 
+
         private void SetHealthUI ()
         {
-            // Set the slider's value appropriately.
-            m_Slider.value = m_CurrentHealth;
+            if (m_Slider200.value > 0) // アーマーのHPバーを更新
+            {
+                m_Slider200.value = Mathf.Clamp(m_Slider200.value, 0, m_Slider200.maxValue);
+                m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_Slider200.value / m_Slider200.maxValue);
+            }
+            else
+            {
+                // Set the slider's value appropriately.
+                m_Slider.value = m_CurrentHealth;
 
-            // Interpolate the color of the bar between the choosen colours based on the current percentage of the starting health.
-            m_FillImage.color = Color.Lerp (m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
+                // Interpolate the color of the bar between the choosen colours based on the current percentage of the starting health.
+                m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
+            }
         }
 
 
@@ -112,8 +147,10 @@ namespace Complete
 
                 if (armorEffect > 0)
                 {
-                    m_StartingHealth *= armorEffect; // 効果を適用
+                    m_Slider200.maxValue = armorEffect;// 効果を適用
+                    m_Slider200.value = m_Slider200.maxValue;
                     Debug.Log($"アーマーの効果を発動しました: 体力が {m_StartingHealth} に増加, 増加倍率: {armorEffect}");
+
                 }
                 else
                 {
