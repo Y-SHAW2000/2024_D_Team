@@ -1,5 +1,4 @@
 ﻿
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -105,10 +104,21 @@ namespace Complete
         private void CheckItemUse()
         {
             Debug.Log("使用したアイテムがあるかチェックしてるよ");
+
             if (UseItemManager.useArmor)
             {
-                //m_StartingHealth
-                Debug.Log("アーマーの効果を発動しました");
+                // アーマーアイテムの効果を取得
+                int armorEffect = jsonReader.GetEffectByName("戦車の装甲強化");
+
+                if (armorEffect > 0)
+                {
+                    m_StartingHealth *= armorEffect; // 効果を適用
+                    Debug.Log($"アーマーの効果を発動しました: 体力が {m_StartingHealth} に増加, 増加倍率: {armorEffect}");
+                }
+                else
+                {
+                    Debug.LogError("アーマーアイテムの効果が見つからないか、効果が 0 です。");
+                }
             }
             else
             {

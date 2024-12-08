@@ -12,18 +12,50 @@ public class MasterData : MonoBehaviour
         public int effect;
         public int max;
     }
+
+    [System.Serializable]
     public class ItemDataArray
     {
         public Item[] gameItems;
     }
+
     public class JsonReaderFromResourcesFolder
     {
-        public ItemDataArray GetItemDataArray()
+        private ItemDataArray items;
+
+        public JsonReaderFromResourcesFolder()
         {
-            string filePath = "Assets/Resources/GameItemData.json";
-            TextAsset file = Resources.Load(filePath) as TextAsset;
-            ItemDataArray items = JsonUtility.FromJson<ItemDataArray>(file.text);
-            return items;
+            // "Assets/Resources/GameItemData.json" の Resources 内でのパスを指定
+            string filePath = "GameItemData";
+            TextAsset file = Resources.Load<TextAsset>(filePath);
+
+            if (file != null)
+            {
+                items = JsonUtility.FromJson<ItemDataArray>(file.text);
+            }
+            else
+            {
+                Debug.LogError($"JSON ファイルが見つかりません: {filePath}");
+                items = new ItemDataArray { gameItems = new Item[0] }; // 空の配列を初期化
+            }
+        }
+
+        public int GetEffectByName(string itemName)
+        {
+            if (items != null && items.gameItems != null)
+            {
+                foreach (var item in items.gameItems)
+                {
+                    if (item.name == itemName)
+                    {
+                        Debug.Log($"呼び出したアイテムは: {itemName}値は{item.effect}");
+                        return item.effect;
+                    }
+                }
+            }
+
+            Debug.LogWarning($"アイテムが見つかりませんでした: {itemName}");
+            return 0; // デフォルトの効果値
         }
     }
 }
