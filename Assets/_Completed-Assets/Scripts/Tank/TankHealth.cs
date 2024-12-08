@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Complete
@@ -17,6 +19,7 @@ namespace Complete
         private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
         private float m_CurrentHealth;                      // How much health the tank currently has.
         private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
+        private MasterData.JsonReaderFromResourcesFolder jsonReader;
 
 
         private void Awake ()
@@ -29,14 +32,17 @@ namespace Complete
 
             // Disable the prefab so it can be activated when it's required.
             m_ExplosionParticles.gameObject.SetActive (false);
+            jsonReader = new MasterData.JsonReaderFromResourcesFolder();
 
-            
         }
 
         private void Start()
         {
+
+            Debug.Log("tankhealth開始");
             m_Slider.maxValue = m_StartingHealth;
             m_Slider.value = m_Slider.maxValue;
+            CheckItemUse(); //アイテムを使ったかの確認
         }
 
 
@@ -94,6 +100,20 @@ namespace Complete
 
             // Turn the tank off.
             gameObject.SetActive (false);
+        }
+
+        private void CheckItemUse()
+        {
+            Debug.Log("使用したアイテムがあるかチェックしてるよ");
+            if (UseItemManager.useArmor)
+            {
+                //m_StartingHealth
+                Debug.Log("アーマーの効果を発動しました");
+            }
+            else
+            {
+                Debug.Log("効果は発動してないよ");
+            }
         }
     }
 }

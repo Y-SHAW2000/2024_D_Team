@@ -61,7 +61,7 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.SetInt($"Player_{player.UserId}_Loginday", player.Loginday);
         PlayerPrefs.Save();
 
-        Debug.Log($"[SAVE] プレイヤー情報を保存しました: ID: {player.UserId}, Name: {player.UserName}, LastLogin: {player.LastLoginTime}, PreviousLogin: {player.PreviousLoginTime}, Loginday: {player.Loginday}");
+        Debug.Log($"[SAVE] プレイヤー情報を保存しました: ID: {player.UserId}, Name: {player.UserName}, LastLogin: {player.LastLoginTime}, PreviousLogin: {player.PreviousLoginTime}, Loginday: {player.Loginday},staminaItem:{player.StaminaItem}, armorItem{player.ArmorItem}");
     }
 
     private Playerinfo LoadPlayerinfo(string userId)
@@ -71,10 +71,24 @@ public class UserStateManager : MonoBehaviour
             string userName = PlayerPrefs.GetString($"Player_{userId}_UserName");
             int staminaItem = PlayerPrefs.GetInt($"Player_{userId}_StaminaItem");
             int armorItem = PlayerPrefs.GetInt($"Player_{userId}_ArmorItem");
-            string lastLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_LastLoginTime");
-            string previousLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_PreviousLoginTime"); // 読み込み時に変更
-            DateTime lastLoginTime = DateTime.Parse(lastLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind);
-            DateTime previousLoginTime = DateTime.Parse(previousLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+            // DateTime の読み込み時にデフォルト値を使用
+            string lastLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_LastLoginTime", DateTime.MinValue.ToString("o"));
+            string previousLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_PreviousLoginTime", DateTime.MinValue.ToString("o"));
+
+            DateTime lastLoginTime;
+            DateTime previousLoginTime;
+
+            // パースが失敗する場合には MinValue を使用
+            if (!DateTime.TryParse(lastLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out lastLoginTime))
+            {
+                lastLoginTime = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(previousLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out previousLoginTime))
+            {
+                previousLoginTime = DateTime.MinValue;
+            }
+
             int loginday = PlayerPrefs.GetInt($"Player_{userId}_Loginday");
 
             Debug.Log($"[LOAD] プレイヤー情報を読み込みました: ID: {userId}, Name: {userName}, LastLogin: {lastLoginTime}, PreviousLogin: {previousLoginTime}, Loginday: {loginday}");
@@ -84,7 +98,7 @@ public class UserStateManager : MonoBehaviour
                 StaminaItem = staminaItem,
                 ArmorItem = armorItem,
                 LastLoginTime = lastLoginTime,
-                PreviousLoginTime = previousLoginTime, // 初期化時に変更
+                PreviousLoginTime = previousLoginTime,
                 Loginday = loginday
             };
         }
@@ -92,6 +106,7 @@ public class UserStateManager : MonoBehaviour
         Debug.Log($"[LOAD] プレイヤーデータが見つかりません: ID = {userId}");
         return null;
     }
+
 
     public void ResetPlayerinfo(string userId)
     {

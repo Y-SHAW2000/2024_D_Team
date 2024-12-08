@@ -5,6 +5,7 @@ public class ItemManager : MonoBehaviour
 {
     private UserStateManager userStateManager;
     private ItemInfo iteminfo;
+    //private UseItemManager useitem;
     private int armor;
     private int stamina;
 
@@ -24,6 +25,7 @@ public class ItemManager : MonoBehaviour
     {
         userStateManager = FindObjectOfType<UserStateManager>();
         iteminfo = FindObjectOfType<ItemInfo>();
+        //useitem = FindObjectOfType<UseItemManager>();
     }
     public void HandleItemReceived(GameObject ItemButtonGameObject)
     {
@@ -35,10 +37,12 @@ public class ItemManager : MonoBehaviour
             if (ItemButtonGameObject.name == "Defence_Use_Button" && playerinfo.ArmorItem >= 1)
             {
                 playerinfo.ArmorItem -= 1;
+                UseItemManager.UseArmorItem();
             }
             if (ItemButtonGameObject.name == "Stamina_Use_Button" && playerinfo.StaminaItem >= 1)
             {
                 playerinfo.StaminaItem -= 1;
+                UseItemManager.UseStaminaItem();
             }
             Debug.Log($"アイテムを使用したarmor : {playerinfo.ArmorItem} stamina: {playerinfo.StaminaItem}");
         }
