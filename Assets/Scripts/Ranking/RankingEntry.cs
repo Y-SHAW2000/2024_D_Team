@@ -24,8 +24,8 @@ public class RankingEntry : MonoBehaviour
 
     public void SetData(RankingManager.PlayerStats stats, bool isOutOfTop10 = false)
     {
-        Debug.Log(stats.Rank.ToString());
-        Debug.Log(isOutOfTop10);
+        //Debug.Log(stats.Rank.ToString());
+        //Debug.Log(isOutOfTop10);
         rankText.text = isOutOfTop10 ? "OutOfTop10" : stats.Rank.ToString();
         if(stats.Rank == 1)
         {
