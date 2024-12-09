@@ -15,7 +15,7 @@ public class DialogManager : MonoBehaviour
         closeButton.onClick.AddListener(CloseDialog);
     }
 
-    private void OnDisable()
+    /*private void OnDisable()
     {
         // アイテム変更イベントの購読を解除
         GetItem.OnButtonClicked -= ShowDialog;
@@ -55,6 +55,7 @@ public class DialogManager : MonoBehaviour
         else
         {
             dialogText.text = $"\n\n\nエラーが発生しました";
+            dialogPanel.SetActive(true);
         }
 
     }

@@ -6,21 +6,17 @@ using UnityEngine.UI;
 public class GetItem : MonoBehaviour
 {
     private DialogManager dialog;
-    public static event Action<GameObject> OnButtonClicked;
 
     public Button ItemButton;  // アイテムのボタン
 
     private void Awake()
     {
         dialog = FindObjectOfType<DialogManager>();
-        if (dialog == null)
-        {
-            Debug.LogError("DialogManager が見つかりません！シーンに配置されていることを確認してください。");
-        }
     }
     private void Start()
     {
-        ItemButton.onClick.AddListener(ButtonClicked(ItemButton.gameObject));
+        // ボタンのクリックイベントを設定
+        ItemButton.onClick.AddListener(() => ButtonClicked(ItemButton.gameObject));
     }
 
     private void ButtonClicked(GameObject ItemButtonGameObject)
