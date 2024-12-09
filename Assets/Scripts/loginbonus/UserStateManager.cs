@@ -12,6 +12,7 @@ public class UserStateManager : MonoBehaviour
         public string UserName;
         public int StaminaItem;
         public int ArmorItem;
+        public int Stamina;
         public DateTime LastLoginTime;
         public DateTime PreviousLoginTime; // 前回のログイン日時に変更
         public int Loginday;
@@ -22,6 +23,7 @@ public class UserStateManager : MonoBehaviour
             UserName = userName;
             StaminaItem = 0;
             ArmorItem = 0;
+            Stamina = 3;
             LastLoginTime = DateTime.MinValue; // 初期値
             PreviousLoginTime = DateTime.MinValue; // 初期値
             Loginday = 0;
@@ -56,6 +58,7 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.SetString($"Player_{player.UserId}_UserName", player.UserName);
         PlayerPrefs.SetInt($"Player_{player.UserId}_StaminaItem", player.StaminaItem);
         PlayerPrefs.SetInt($"Player_{player.UserId}_ArmorItem", player.ArmorItem);
+        PlayerPrefs.SetInt($"Player_{player.UserId}_Stamina", player.Stamina);
         PlayerPrefs.SetString($"Player_{player.UserId}_LastLoginTime", player.LastLoginTime.ToString("o"));
         PlayerPrefs.SetString($"Player_{player.UserId}_PreviousLoginTime", player.PreviousLoginTime.ToString("o")); // 保存時に変更
         PlayerPrefs.SetInt($"Player_{player.UserId}_Loginday", player.Loginday);
@@ -71,6 +74,7 @@ public class UserStateManager : MonoBehaviour
             string userName = PlayerPrefs.GetString($"Player_{userId}_UserName");
             int staminaItem = PlayerPrefs.GetInt($"Player_{userId}_StaminaItem");
             int armorItem = PlayerPrefs.GetInt($"Player_{userId}_ArmorItem");
+            int stamina = PlayerPrefs.GetInt($"Player_{userId}_Stamina");
 
             // DateTime の読み込み時にデフォルト値を使用
             string lastLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_LastLoginTime", DateTime.MinValue.ToString("o"));
@@ -97,6 +101,7 @@ public class UserStateManager : MonoBehaviour
             {
                 StaminaItem = staminaItem,
                 ArmorItem = armorItem,
+                Stamina = stamina,
                 LastLoginTime = lastLoginTime,
                 PreviousLoginTime = previousLoginTime,
                 Loginday = loginday
@@ -113,6 +118,7 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.DeleteKey($"Player_{userId}_UserName");
         PlayerPrefs.DeleteKey($"Player_{userId}_StaminaItem");
         PlayerPrefs.DeleteKey($"Player_{userId}_ArmorItem");
+        PlayerPrefs.DeleteKey($"Player_{userId}_Stamina");
         PlayerPrefs.DeleteKey($"Player_{userId}_LastLoginTime");
         PlayerPrefs.DeleteKey($"Player_{userId}_Loginday");
         PlayerPrefs.DeleteKey($"Player_{userId}_PreviousLoginTime"); // キーを変更

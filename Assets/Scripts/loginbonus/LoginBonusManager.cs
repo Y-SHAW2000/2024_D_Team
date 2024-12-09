@@ -46,7 +46,7 @@ public class LoginBonusManager : MonoBehaviour
             userStateManager.SavePlayerinfo(playerinfo);
 
             LastLoginTime = currentJapanDate; // 最終ログインを更新
-
+            UseItemManager.GetLogInBonus();
             return true;
         }
         else

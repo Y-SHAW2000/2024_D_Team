@@ -50,35 +50,34 @@ public class ItemInfo : MonoBehaviour
         FetchLoginDays();   
     }
     
-    private void Getinfo()
-    {
-        var playerinfo = userStateManager.CurrentPlayer;
-        loginDays = playerinfo.Loginday;
-        stamina = playerinfo.StaminaItem;
-        armor = playerinfo.ArmorItem;
-    }
     private void FetchLoginDays()
     {
         var playerinfo = userStateManager.CurrentPlayer;
 
-        if (playerinfo != null)
+        if (playerinfo != null&& UseItemManager.loginbonus == true)
         {
-            loginDays = playerinfo.Loginday;
+            // 両方のアイテムを +1 増加
+            playerinfo.StaminaItem += 1;
+            playerinfo.ArmorItem += 1;
 
+            Debug.Log($"ログインにより StaminaItem と ArmorItem を +1 しました。現在の StaminaItem: {playerinfo.StaminaItem}, ArmorItem: {playerinfo.ArmorItem}");
 
-            // ログイン日数に応じた処理
-            if (loginDays % 2 == 0) // 偶数の場合
-            {
-                playerinfo.StaminaItem += 1;
-                Debug.Log($"ログイン日数が偶数なので StaminaItem を +1 しました。現在の StaminaItem: {playerinfo.StaminaItem}");
-            }
-            else // 奇数の場合
-            {
-                playerinfo.ArmorItem += 1;
-                Debug.Log($"ログイン日数が奇数なので ArmorItem を +1 しました。現在の ArmorItem: {playerinfo.ArmorItem}");
-            }
-            userStateManager.SavePlayerinfo(playerinfo);　//データの更新
+            // データの更新
+            userStateManager.SavePlayerinfo(playerinfo);
             Debug.Log($"更新しましたスタミナ: {playerinfo.StaminaItem}アーマー: {playerinfo.ArmorItem}");
+
+            // テキストの更新
+            UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
+            UseItemManager.loginbonus = false; //ログインボーナスは受け取り済み
+        }
+        else if(playerinfo != null && UseItemManager.loginbonus == false)
+        {
+            Debug.Log("ログインボーナスはもう受け取ったよ");
+            // データの更新
+            userStateManager.SavePlayerinfo(playerinfo);
+            Debug.Log($"更新しましたスタミナ: {playerinfo.StaminaItem}アーマー: {playerinfo.ArmorItem}");
+
+            // テキストの更新
             UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
         }
         else
@@ -86,6 +85,7 @@ public class ItemInfo : MonoBehaviour
             Debug.LogError("CurrentPlayer が設定されていません！");
         }
     }
+
 
     public void UpdateText(int armor, int stamina)
     {

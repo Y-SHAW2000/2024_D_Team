@@ -5,11 +5,10 @@ public class ItemManager : MonoBehaviour
 {
     private UserStateManager userStateManager;
     private ItemInfo iteminfo;
-    //private UseItemManager useitem;
     private int armor;
     private int stamina;
 
-    private void OnEnable()
+    /*private void OnEnable()
     {
         // アイテム変更イベントを購読
         GetItem.OnButtonClicked += HandleItemReceived;
@@ -19,7 +18,7 @@ public class ItemManager : MonoBehaviour
     {
         // アイテム変更イベントの購読を解除
         GetItem.OnButtonClicked -= HandleItemReceived;
-    }
+    }*/
 
     void Start()
     {
