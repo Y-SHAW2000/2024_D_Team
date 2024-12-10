@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class DialogManager : MonoBehaviour
 {
     private ItemManager itemmanager;
+    private UserStateManager userstate;
     public GameObject dialogPanel;
     public Text dialogText;
     public Button closeButton;
@@ -11,18 +12,15 @@ public class DialogManager : MonoBehaviour
     private void Awake()
     {
         itemmanager = FindObjectOfType<ItemManager>();
+        userstate = FindObjectOfType<UserStateManager>();
         dialogPanel.SetActive(false);
         closeButton.onClick.AddListener(CloseDialog);
     }
 
-    /*private void OnDisable()
-    {
-        // アイテム変更イベントの購読を解除
-        GetItem.OnButtonClicked -= ShowDialog;
-    }*/
-
     public void ShowDialog(GameObject ItemButtonGameObject)
     {
+        var playerinfo = userstate.CurrentPlayer;
+
         // `dialogPanel` が非表示でも表示中でも、内容を更新
         if (ItemButtonGameObject.name == "Defence_Use_Button")
         {
@@ -40,10 +38,15 @@ public class DialogManager : MonoBehaviour
         }
         else if (ItemButtonGameObject.name == "Stamina_Use_Button")
         {
-            if(UseItemManager.useStamina == false)
+            if(UseItemManager.useStamina == false && playerinfo.Stamina < 5)
             {
                 dialogText.text = $"使用しました\n\n効果\n\n ・使用することでプレイヤーのスタミナを1回復する。\r\n";
                 itemmanager.HandleItemReceived(ItemButtonGameObject);
+                dialogPanel.SetActive(true);
+            }
+            else if(UseItemManager.useStamina == false && playerinfo.Stamina == 5)
+            {
+                dialogText.text = $"\n\n\n スタミナはこれ以上回復できません。";
                 dialogPanel.SetActive(true);
             }
             else
