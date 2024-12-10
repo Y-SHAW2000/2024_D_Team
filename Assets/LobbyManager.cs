@@ -4,6 +4,8 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.Collections;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
@@ -19,9 +21,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        // ルームオプションを設定
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 2 // ルームの最大人数を設定
+        };
+
         // "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions(), TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("Room", roomOptions, TypedLobby.Default);
         leaveButton.onClick.AddListener(OnLeaveLobby);
         readyButton.onClick.AddListener(OnReadyPressed);
 
@@ -60,7 +67,18 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         isReady = !isReady;
         photonView.RPC("NotifyReady", RpcTarget.Others, isReady);
+        // 自分の Ready 状態をルームのカスタムプロパティに保存
+        Hashtable playerProperties = new Hashtable
+        {
+            { "IsReady", isReady }
+        };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+
+        // 自分の Ready 状態を更新
         UpdateReadyStatus();
+
+        // Ready 状態の確認
+        CheckReadyStatus();
     }
 
     [PunRPC]
@@ -68,12 +86,48 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         readyStatusText.text = opponentReady ? "Opponent is Ready!" : "Opponent is Not Ready";
     }
+    private void CheckReadyStatus()
+    {
+        bool allPlayersReady = true;
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.CustomProperties.TryGetValue("IsReady", out object isPlayerReady))
+            {
+                if (!(bool)isPlayerReady)
+                {
+                    allPlayersReady = false; // 1人でも準備ができていないプレイヤーがいれば、ゲームシーンに遷移しない
+                    break;
+                }
+            }
+        }
+
+        if (allPlayersReady)
+        {
+            Debug.Log("Both players are ready! Moving to battle scene.");
+            SceneManager.LoadScene("_Complete-Game");
+        }
+        else
+        {
+            Debug.Log("Not all players are ready.");
+        }
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey("IsReady"))
+        {
+            Debug.Log($"Player {targetPlayer.NickName} Ready State Updated: {changedProps["IsReady"]}");
+            CheckReadyStatus();
+        }
+    }
 
     private void UpdateReadyStatus()
     {
         readyStatusText.text = isReady ? "You are Ready!" : "You are Not Ready";
     }
-private void SendStamp(string stampName)
+
+    private void SendStamp(string stampName)
     {
         photonView.RPC("ReceiveStamp", RpcTarget.Others, stampName);
         DisplayStamp(playerStampDisplay, stampName);
@@ -89,15 +143,27 @@ private void SendStamp(string stampName)
     {
         // スタンプを表示し、5秒後にフェードアウトするロジック
         Sprite stampSprite = Resources.Load<Sprite>($"Stamps/{stampName}"); // スタンプ画像リソースをロード
-        
+
         stampDisplay.sprite = stampSprite;
         stampDisplay.color = Color.white;
         stampDisplay.SetNativeSize();
         CancelInvoke(nameof(HideStamp));
         Invoke(nameof(HideStamp), 5f);
     }
+
+    private IEnumerator FadeOutStamp(Image stampDisplay)
+    {
+        for (float alpha = 1f; alpha >= 0; alpha -= 0.1f)
+        {
+            Color color = stampDisplay.color;
+            color.a = alpha;
+            stampDisplay.color = color;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     private void HideStamp()
     {
-        playerStampDisplay.color = new Color(1, 1, 1, 0); // フェードアウト
+        StartCoroutine(FadeOutStamp(playerStampDisplay));
     }
 }

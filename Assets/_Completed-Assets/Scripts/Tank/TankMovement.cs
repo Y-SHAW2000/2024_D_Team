@@ -32,7 +32,7 @@ namespace Complete
         private void Awake()
         {
             m_Rigidbody = GetComponent<Rigidbody>();
-
+      
             if (m_Turret == null) //ゲームオブジェクトが参照できるかどうか
             {
                 Debug.Log("Turret object is not found");
