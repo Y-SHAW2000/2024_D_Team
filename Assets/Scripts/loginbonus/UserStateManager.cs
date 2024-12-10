@@ -14,7 +14,7 @@ public class UserStateManager : MonoBehaviour
         public int ArmorItem;
         public int Stamina;
         public DateTime LastLoginTime;
-        public DateTime PreviousLoginTime; // ‘O‰ñ‚ÌƒƒOƒCƒ““ú‚É•ÏX
+        public DateTime PreviousLoginTime; // å‰å›ã®ãƒ­ã‚°ã‚¤ãƒ³æ—¥æ™‚ã«å¤‰æ›´
         public int Loginday;
 
         public Playerinfo(string userId, string userName)
@@ -24,8 +24,8 @@ public class UserStateManager : MonoBehaviour
             StaminaItem = 0;
             ArmorItem = 0;
             Stamina = 3;
-            LastLoginTime = DateTime.MinValue; // ‰Šú’l
-            PreviousLoginTime = DateTime.MinValue; // ‰Šú’l
+            LastLoginTime = DateTime.MinValue; // åˆæœŸå€¤
+            PreviousLoginTime = DateTime.MinValue; // åˆæœŸå€¤
             Loginday = 0;
         }
     }
@@ -41,15 +41,15 @@ public class UserStateManager : MonoBehaviour
 
         currentPlayer = LoadPlayerinfo(userId) ?? CreatePlayer(userId, userName);
 
-        Debug.Log($"[START] ƒvƒŒƒCƒ„[î•ñ: ID: {currentPlayer.UserId}, Name: {currentPlayer.UserName}, LastLogin: {currentPlayer.LastLoginTime}, PreviousLogin: {currentPlayer.PreviousLoginTime}, Loginday: {currentPlayer.Loginday}");
+        Debug.Log($"[START] ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±: ID: {currentPlayer.UserId}, Name: {currentPlayer.UserName}, LastLogin: {currentPlayer.LastLoginTime}, PreviousLogin: {currentPlayer.PreviousLoginTime}, Loginday: {currentPlayer.Loginday}");
 
-        SavePlayerinfo(currentPlayer); // ƒQ[ƒ€ŠJn‚Éˆê“x•Û‘¶
+        SavePlayerinfo(currentPlayer); // ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã«ä¸€åº¦ä¿å­˜
     }
 
     private Playerinfo CreatePlayer(string userId, string userName)
     {
         var newPlayer = new Playerinfo(userId, userName);
-        Debug.Log($"[CREATE] V‚µ‚¢ƒvƒŒƒCƒ„[ì¬: ID = {userId}, Name = {userName}");
+        Debug.Log($"[CREATE] æ–°ã—ã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½œæˆ: ID = {userId}, Name = {userName}");
         return newPlayer;
     }
 
@@ -60,11 +60,11 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.SetInt($"Player_{player.UserId}_ArmorItem", player.ArmorItem);
         PlayerPrefs.SetInt($"Player_{player.UserId}_Stamina", player.Stamina);
         PlayerPrefs.SetString($"Player_{player.UserId}_LastLoginTime", player.LastLoginTime.ToString("o"));
-        PlayerPrefs.SetString($"Player_{player.UserId}_PreviousLoginTime", player.PreviousLoginTime.ToString("o")); // •Û‘¶‚É•ÏX
+        PlayerPrefs.SetString($"Player_{player.UserId}_PreviousLoginTime", player.PreviousLoginTime.ToString("o")); // ä¿å­˜æ™‚ã«å¤‰æ›´
         PlayerPrefs.SetInt($"Player_{player.UserId}_Loginday", player.Loginday);
         PlayerPrefs.Save();
 
-        Debug.Log($"[SAVE] ƒvƒŒƒCƒ„[î•ñ‚ğ•Û‘¶‚µ‚Ü‚µ‚½: ID: {player.UserId}, Name: {player.UserName}, LastLogin: {player.LastLoginTime}, PreviousLogin: {player.PreviousLoginTime}, Loginday: {player.Loginday},staminaItem:{player.StaminaItem}, armorItem{player.ArmorItem}");
+        Debug.Log($"[SAVE] ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ã‚’ä¿å­˜ã—ã¾ã—ãŸ: ID: {player.UserId}, Name: {player.UserName}, LastLogin: {player.LastLoginTime}, PreviousLogin: {player.PreviousLoginTime}, Loginday: {player.Loginday},staminaItem:{player.StaminaItem}, armorItem{player.ArmorItem}");
     }
 
     private Playerinfo LoadPlayerinfo(string userId)
@@ -76,14 +76,14 @@ public class UserStateManager : MonoBehaviour
             int armorItem = PlayerPrefs.GetInt($"Player_{userId}_ArmorItem");
             int stamina = PlayerPrefs.GetInt($"Player_{userId}_Stamina");
 
-            // DateTime ‚Ì“Ç‚İ‚İ‚ÉƒfƒtƒHƒ‹ƒg’l‚ğg—p
+            // DateTime ã®èª­ã¿è¾¼ã¿æ™‚ã«ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã‚’ä½¿ç”¨
             string lastLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_LastLoginTime", DateTime.MinValue.ToString("o"));
             string previousLoginTimeStr = PlayerPrefs.GetString($"Player_{userId}_PreviousLoginTime", DateTime.MinValue.ToString("o"));
 
             DateTime lastLoginTime;
             DateTime previousLoginTime;
 
-            // ƒp[ƒX‚ª¸”s‚·‚éê‡‚É‚Í MinValue ‚ğg—p
+            // ãƒ‘ãƒ¼ã‚¹ãŒå¤±æ•—ã™ã‚‹å ´åˆã«ã¯ MinValue ã‚’ä½¿ç”¨
             if (!DateTime.TryParse(lastLoginTimeStr, null, System.Globalization.DateTimeStyles.RoundtripKind, out lastLoginTime))
             {
                 lastLoginTime = DateTime.MinValue;
@@ -95,7 +95,7 @@ public class UserStateManager : MonoBehaviour
 
             int loginday = PlayerPrefs.GetInt($"Player_{userId}_Loginday");
 
-            Debug.Log($"[LOAD] ƒvƒŒƒCƒ„[î•ñ‚ğ“Ç‚İ‚İ‚Ü‚µ‚½: ID: {userId}, Name: {userName}, LastLogin: {lastLoginTime}, PreviousLogin: {previousLoginTime}, Loginday: {loginday}");
+            Debug.Log($"[LOAD] ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ã‚’èª­ã¿è¾¼ã¿ã¾ã—ãŸ: ID: {userId}, Name: {userName}, LastLogin: {lastLoginTime}, PreviousLogin: {previousLoginTime}, Loginday: {loginday}");
 
             return new Playerinfo(userId, userName)
             {
@@ -108,7 +108,7 @@ public class UserStateManager : MonoBehaviour
             };
         }
 
-        Debug.Log($"[LOAD] ƒvƒŒƒCƒ„[ƒf[ƒ^‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: ID = {userId}");
+        Debug.Log($"[LOAD] ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‡ãƒ¼ã‚¿ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: ID = {userId}");
         return null;
     }
 
@@ -121,12 +121,12 @@ public class UserStateManager : MonoBehaviour
         PlayerPrefs.DeleteKey($"Player_{userId}_Stamina");
         PlayerPrefs.DeleteKey($"Player_{userId}_LastLoginTime");
         PlayerPrefs.DeleteKey($"Player_{userId}_Loginday");
-        PlayerPrefs.DeleteKey($"Player_{userId}_PreviousLoginTime"); // ƒL[‚ğ•ÏX
+        PlayerPrefs.DeleteKey($"Player_{userId}_PreviousLoginTime"); // ã‚­ãƒ¼ã‚’å¤‰æ›´
         PlayerPrefs.Save();
 
-        Debug.Log($"Playerinfo ‚ğƒŠƒZƒbƒg‚µ‚Ü‚µ‚½: ID = {userId}");
-        // ƒŠƒZƒbƒgŒã‚ÉƒvƒŒƒCƒ„[ƒf[ƒ^‚ğÄƒ[ƒh
-        currentPlayer = LoadPlayerinfo(userId) ?? CreatePlayer(userId, "DefaultName"); // •K—v‚É‰‚¶‚ÄƒfƒtƒHƒ‹ƒg–¼
-        Debug.Log($"Playerinfo ‚ğƒŠƒZƒbƒgŒã‚ÉÄ‰Šú‰»: ID = {currentPlayer.UserId}, Name = {currentPlayer.UserName}");
+        Debug.Log($"Playerinfo ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã—ãŸ: ID = {userId}");
+        // ãƒªã‚»ãƒƒãƒˆå¾Œã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’å†ãƒ­ãƒ¼ãƒ‰
+        currentPlayer = LoadPlayerinfo(userId) ?? CreatePlayer(userId, "DefaultName"); // å¿…è¦ã«å¿œã˜ã¦ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå
+        Debug.Log($"Playerinfo ã‚’ãƒªã‚»ãƒƒãƒˆå¾Œã«å†åˆæœŸåŒ–: ID = {currentPlayer.UserId}, Name = {currentPlayer.UserName}");
     }
 }

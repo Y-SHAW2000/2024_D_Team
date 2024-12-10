@@ -7,7 +7,7 @@ public class LoginBonusDisplay : MonoBehaviour
 {
     private UserStateManager userStateManager;
 
-    // ŠeƒƒOƒCƒ“ƒ{[ƒiƒX“ú‚ğ•\‚·ƒeƒLƒXƒg
+    // å„ãƒ­ã‚°ã‚¤ãƒ³ãƒœãƒ¼ãƒŠã‚¹æ—¥ã‚’è¡¨ã™ãƒ†ã‚­ã‚¹ãƒˆ
     public List<Text> dayTexts;
 
     IEnumerator Start()
@@ -15,17 +15,17 @@ public class LoginBonusDisplay : MonoBehaviour
         userStateManager = FindObjectOfType<UserStateManager>();
         if (userStateManager == null)
         {
-            Debug.LogError("UserStateManager ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("UserStateManager ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
             yield break;
         }
 
         while (userStateManager.CurrentPlayer == null)
         {
-            Debug.Log("CurrentPlayerİ’è’†");
+            Debug.Log("CurrentPlayerè¨­å®šä¸­");
             yield return null;
         }
 
-        Debug.Log("LoginBonusDisplay: CurrentPlayer ‚ğ”F¯");
+        Debug.Log("LoginBonusDisplay: CurrentPlayer ã‚’èªè­˜");
         DisplayLoginBonusStatus();
     }
 
@@ -35,26 +35,26 @@ public class LoginBonusDisplay : MonoBehaviour
         var playerinfo = userStateManager.CurrentPlayer;
         if (playerinfo == null)
         {
-            Debug.LogError("ƒvƒŒƒCƒ„[î•ñ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             return;
         }
 
-        Debug.Log("playerinfo‚Íæ“¾‚³‚ê‚Ü‚µ‚½");
+        Debug.Log("playerinfoã¯å–å¾—ã•ã‚Œã¾ã—ãŸ");
         int loginday = playerinfo.Loginday;
 
-        // ‚·‚×‚Ä‚ÌƒeƒLƒXƒg‚ğ”ñ•\¦‚Ü‚½‚ÍƒŠƒZƒbƒg
+        // ã™ã¹ã¦ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’éè¡¨ç¤ºã¾ãŸã¯ãƒªã‚»ãƒƒãƒˆ
         foreach (var text in dayTexts)
         {
-            text.gameObject.SetActive(false); // ”ñ•\¦‚É‚·‚é
+            text.gameObject.SetActive(false); // éè¡¨ç¤ºã«ã™ã‚‹
         }
 
-        // Loginday •ª‚¾‚¯uÏv‚ğİ’è‚µ‚Ä•\¦
+        // Loginday åˆ†ã ã‘ã€Œæ¸ˆã€ã‚’è¨­å®šã—ã¦è¡¨ç¤º
         for (int i = 0; i < loginday; i++)
         {
             if (i < dayTexts.Count)
             {
-                dayTexts[i].gameObject.SetActive(true); // •\¦
-                Debug.Log($"Day {i + 1} ‚ÉuÏv‚ğ•\¦‚µ‚Ü‚µ‚½B");
+                dayTexts[i].gameObject.SetActive(true); // è¡¨ç¤º
+                Debug.Log($"Day {i + 1} ã«ã€Œæ¸ˆã€ã‚’è¡¨ç¤ºã—ã¾ã—ãŸã€‚");
             }
         }
     }

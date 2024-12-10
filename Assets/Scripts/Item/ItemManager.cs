@@ -10,13 +10,13 @@ public class ItemManager : MonoBehaviour
 
     /*private void OnEnable()
     {
-        // ƒAƒCƒeƒ€•ÏXƒCƒxƒ“ƒg‚ðw“Ç
+        // ã‚¢ã‚¤ãƒ†ãƒ å¤‰æ›´ã‚¤ãƒ™ãƒ³ãƒˆã‚’è³¼èª­
         GetItem.OnButtonClicked += HandleItemReceived;
     }
 
     private void OnDisable()
     {
-        // ƒAƒCƒeƒ€•ÏXƒCƒxƒ“ƒg‚Ìw“Ç‚ð‰ðœ
+        // ã‚¢ã‚¤ãƒ†ãƒ å¤‰æ›´ã‚¤ãƒ™ãƒ³ãƒˆã®è³¼èª­ã‚’è§£é™¤
         GetItem.OnButtonClicked -= HandleItemReceived;
     }*/
 
@@ -43,9 +43,9 @@ public class ItemManager : MonoBehaviour
                 playerinfo.StaminaItem -= 1;
                 UseItemManager.UseStaminaItem();
             }
-            Debug.Log($"ƒAƒCƒeƒ€‚ðŽg—p‚µ‚½armor : {playerinfo.ArmorItem} stamina: {playerinfo.StaminaItem}");
+            Debug.Log($"ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã—ãŸarmor : {playerinfo.ArmorItem} stamina: {playerinfo.StaminaItem}");
         }
-        userStateManager.SavePlayerinfo(playerinfo); //ƒf[ƒ^‚ÌXV
+        userStateManager.SavePlayerinfo(playerinfo); //ãƒ‡ãƒ¼ã‚¿ã®æ›´æ–°
         iteminfo.UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
     }
 }

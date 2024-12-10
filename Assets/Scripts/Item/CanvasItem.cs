@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class CanvasItem : MonoBehaviour
 {
     private UserStateManager userStateManager;
-    public Text staminaText; // スタミナ表示用のText
-    public Text ArmorText; // スタミナ表示用のText
+    public Text staminaText; // 繧ｹ繧ｿ繝溘リ陦ｨ遉ｺ逕ｨ縺ｮText
+    public Text ArmorText; // 繧ｹ繧ｿ繝溘リ陦ｨ遉ｺ逕ｨ縺ｮText
     private int stamina;
     private bool armor;
     void Awake()
@@ -15,7 +15,7 @@ public class CanvasItem : MonoBehaviour
     }
     void Start()
     {
-        UpdateStaminaText(); // 初期値を表示
+        UpdateStaminaText(); // 蛻晄悄蛟､繧定｡ｨ遉ｺ
         UpdateArmorText();
     }
 
@@ -23,18 +23,18 @@ public class CanvasItem : MonoBehaviour
     private void UpdateStaminaText()
     {
         var playerinfo = userStateManager.CurrentPlayer;
-        staminaText.text = $"Stamina: {playerinfo.Stamina}"; // スタミナ表示を更新
+        staminaText.text = $"Stamina: {playerinfo.Stamina}"; // 繧ｹ繧ｿ繝溘リ陦ｨ遉ｺ繧呈峩譁ｰ
     }
 
     private void UpdateArmorText()
     {
         if (UseItemManager.useArmor == true) 
         {
-            ArmorText.text = $"Armor: {2}"; // スタミナ表示を更新
+            ArmorText.text = $"Armor: {2}"; // 繧ｹ繧ｿ繝溘リ陦ｨ遉ｺ繧呈峩譁ｰ
         }
         else
         {
-            ArmorText.text = $"Armor: {1}"; // スタミナ表示を更新
+            ArmorText.text = $"Armor: {1}"; // 繧ｹ繧ｿ繝溘リ陦ｨ遉ｺ繧呈峩譁ｰ
         }
     }
 }

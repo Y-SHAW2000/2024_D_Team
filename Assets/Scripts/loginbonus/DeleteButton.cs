@@ -14,22 +14,22 @@ public class DeleteButton : MonoBehaviour
     {
         startButton.onClick.AddListener(OnClicked);
 
-        // LoginBonusManager ‚ğæ“¾
+        // LoginBonusManager ã‚’å–å¾—
         userStateManager = FindObjectOfType<UserStateManager>();
         if (userStateManager == null)
         {
-            Debug.LogError("userStateManager ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("userStateManager ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
             return;
         }
     }
 
     private void OnClicked()
     {
-        // ƒ†[ƒU[ƒf[ƒ^‚ğƒŠƒZƒbƒg‚·‚é
+        // ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
         if (userStateManager.CurrentPlayer != null)
         {
             userStateManager.ResetPlayerinfo(userStateManager.CurrentPlayer.UserId);
-            Debug.Log("ƒ†[ƒU[ƒf[ƒ^‚ğƒŠƒZƒbƒg‚µ‚Ü‚µ‚½B");
+            Debug.Log("ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã—ãŸã€‚");
         }
     }
 }

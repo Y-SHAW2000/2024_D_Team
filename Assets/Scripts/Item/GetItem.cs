@@ -7,7 +7,7 @@ public class GetItem : MonoBehaviour
 {
     private DialogManager dialog;
 
-    public Button ItemButton;  // ƒAƒCƒeƒ€‚Ìƒ{ƒ^ƒ“
+    public Button ItemButton;  // ã‚¢ã‚¤ãƒ†ãƒ ã®ãƒœã‚¿ãƒ³
 
     private void Awake()
     {
@@ -15,13 +15,13 @@ public class GetItem : MonoBehaviour
     }
     private void Start()
     {
-        // ƒ{ƒ^ƒ“‚ÌƒNƒŠƒbƒNƒCƒxƒ“ƒg‚ğİ’è
+        // ãƒœã‚¿ãƒ³ã®ã‚¯ãƒªãƒƒã‚¯ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¨­å®š
         ItemButton.onClick.AddListener(() => ButtonClicked(ItemButton.gameObject));
     }
 
     private void ButtonClicked(GameObject ItemButtonGameObject)
     {
-        Debug.Log($"ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ü‚µ‚½: {ItemButtonGameObject.name}");
+        Debug.Log($"ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¾ã—ãŸ: {ItemButtonGameObject.name}");
         dialog.ShowDialog(ItemButtonGameObject);
     }
 }

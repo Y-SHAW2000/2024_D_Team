@@ -23,24 +23,24 @@ public class ItemInfo : MonoBehaviour
         userStateManager = FindObjectOfType<UserStateManager>();
         if (userStateManager == null)
         {
-            Debug.LogError("UserStateManager ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("UserStateManager ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
             yield break;
         }
 
         loginBonusManager = FindObjectOfType<LoginBonusManager>();
         if (loginBonusManager == null)
         {
-            Debug.LogError("LoginBonusManager ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("LoginBonusManager ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
             yield break;
         }
 
         while (userStateManager.CurrentPlayer == null)
         {
-            Debug.Log("CurrentPlayerİ’è’†");
+            Debug.Log("CurrentPlayerè¨­å®šä¸­");
             yield return null;
         }
 
-        Debug.Log("LoginBonusDisplay: CurrentPlayer ‚ğ”F¯‚µ‚Ü‚µ‚½I");
+        Debug.Log("LoginBonusDisplay: CurrentPlayer ã‚’èªè­˜ã—ã¾ã—ãŸï¼");
 
         var playerinfo = userStateManager.CurrentPlayer;
         loginDays = playerinfo.Loginday;
@@ -56,33 +56,33 @@ public class ItemInfo : MonoBehaviour
 
         if (playerinfo != null&& UseItemManager.loginbonus == true)
         {
-            // —¼•û‚ÌƒAƒCƒeƒ€‚ğ +1 ‘‰Á
+            // ä¸¡æ–¹ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ +1 å¢—åŠ 
             playerinfo.StaminaItem += 1;
             playerinfo.ArmorItem += 1;
 
-            Debug.Log($"ƒƒOƒCƒ“‚É‚æ‚è StaminaItem ‚Æ ArmorItem ‚ğ +1 ‚µ‚Ü‚µ‚½BŒ»İ‚Ì StaminaItem: {playerinfo.StaminaItem}, ArmorItem: {playerinfo.ArmorItem}");
+            Debug.Log($"ãƒ­ã‚°ã‚¤ãƒ³ã«ã‚ˆã‚Š StaminaItem ã¨ ArmorItem ã‚’ +1 ã—ã¾ã—ãŸã€‚ç¾åœ¨ã® StaminaItem: {playerinfo.StaminaItem}, ArmorItem: {playerinfo.ArmorItem}");
 
-            // ƒf[ƒ^‚ÌXV
+            // ãƒ‡ãƒ¼ã‚¿ã®æ›´æ–°
             userStateManager.SavePlayerinfo(playerinfo);
-            Debug.Log($"XV‚µ‚Ü‚µ‚½ƒXƒ^ƒ~ƒi: {playerinfo.StaminaItem}ƒA[ƒ}[: {playerinfo.ArmorItem}");
+            Debug.Log($"æ›´æ–°ã—ã¾ã—ãŸã‚¹ã‚¿ãƒŸãƒŠ: {playerinfo.StaminaItem}ã‚¢ãƒ¼ãƒãƒ¼: {playerinfo.ArmorItem}");
 
-            // ƒeƒLƒXƒg‚ÌXV
+            // ãƒ†ã‚­ã‚¹ãƒˆã®æ›´æ–°
             UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
-            UseItemManager.loginbonus = false; //ƒƒOƒCƒ“ƒ{[ƒiƒX‚Íó‚¯æ‚èÏ‚İ
+            UseItemManager.loginbonus = false; //ãƒ­ã‚°ã‚¤ãƒ³ãƒœãƒ¼ãƒŠã‚¹ã¯å—ã‘å–ã‚Šæ¸ˆã¿
         }
         else if(playerinfo != null && UseItemManager.loginbonus == false)
         {
-            Debug.Log("ƒƒOƒCƒ“ƒ{[ƒiƒX‚Í‚à‚¤ó‚¯æ‚Á‚½‚æ");
-            // ƒf[ƒ^‚ÌXV
+            Debug.Log("ãƒ­ã‚°ã‚¤ãƒ³ãƒœãƒ¼ãƒŠã‚¹ã¯ã‚‚ã†å—ã‘å–ã£ãŸã‚ˆ");
+            // ãƒ‡ãƒ¼ã‚¿ã®æ›´æ–°
             userStateManager.SavePlayerinfo(playerinfo);
-            Debug.Log($"XV‚µ‚Ü‚µ‚½ƒXƒ^ƒ~ƒi: {playerinfo.StaminaItem}ƒA[ƒ}[: {playerinfo.ArmorItem}");
+            Debug.Log($"æ›´æ–°ã—ã¾ã—ãŸã‚¹ã‚¿ãƒŸãƒŠ: {playerinfo.StaminaItem}ã‚¢ãƒ¼ãƒãƒ¼: {playerinfo.ArmorItem}");
 
-            // ƒeƒLƒXƒg‚ÌXV
+            // ãƒ†ã‚­ã‚¹ãƒˆã®æ›´æ–°
             UpdateText(playerinfo.ArmorItem, playerinfo.StaminaItem);
         }
         else
         {
-            Debug.LogError("CurrentPlayer ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("CurrentPlayer ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
         }
     }
 
@@ -91,14 +91,14 @@ public class ItemInfo : MonoBehaviour
     {
         Debug.Log($"Update stamina: {stamina},armor: {armor}");
 
-        // ƒeƒLƒXƒg‚ªİ’è‚³‚ê‚Ä‚¢‚éê‡‚ÉXV
+        // ãƒ†ã‚­ã‚¹ãƒˆãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã«æ›´æ–°
         if (staminaText != null)
         {
             staminaText.text = $"{stamina}";
         }
         else
         {
-            Debug.LogError("StaminaText ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("StaminaText ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
         }
 
         if (armorText != null)
@@ -107,7 +107,7 @@ public class ItemInfo : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ArmorText ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("ArmorText ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
         }
     }
 }

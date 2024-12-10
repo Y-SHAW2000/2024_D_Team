@@ -17,24 +17,24 @@ public class DialogManager : MonoBehaviour
 
     /*private void OnDisable()
     {
-        // ƒAƒCƒeƒ€•ÏXƒCƒxƒ“ƒg‚Ìw“Ç‚ğ‰ğœ
+        // ã‚¢ã‚¤ãƒ†ãƒ å¤‰æ›´ã‚¤ãƒ™ãƒ³ãƒˆã®è³¼èª­ã‚’è§£é™¤
         GetItem.OnButtonClicked -= ShowDialog;
     }*/
 
     public void ShowDialog(GameObject ItemButtonGameObject)
     {
-        // `dialogPanel` ‚ª”ñ•\¦‚Å‚à•\¦’†‚Å‚àA“à—e‚ğXV
+        // `dialogPanel` ãŒéè¡¨ç¤ºã§ã‚‚è¡¨ç¤ºä¸­ã§ã‚‚ã€å†…å®¹ã‚’æ›´æ–°
         if (ItemButtonGameObject.name == "Defence_Use_Button")
         {
             if (UseItemManager.useArmor == false)
             {
-                dialogText.text = $" g—p‚µ‚Ü‚µ‚½\n\nŒø‰Ê\n\nEg—p‚·‚é‚±‚Æ‚ÅAŸ‚ÌƒvƒŒƒC‚Ì‚İˆê“I‚É©‹@‚ÌÅ‘åHP‚ª2”{‚Æ‚È‚éB\r\nE‚±‚ÌŒø‰Ê‚ª“K—p‚³‚ê‚é‚Ì‚ÍAƒlƒbƒgƒ[ƒN‘Îí‹@”\‚ÆAƒŒƒCƒhƒoƒgƒ‹‹@”\‚Ì‚İ‚Æ‚·‚éB\nE‚¢‚¸‚ê‚à©‹@‚ÌHP‚ª0‚Æ‚È‚Á‚½ƒ^ƒCƒ~ƒ“ƒO‚ÅÅ‘åHP‚ÍŒ³‚Ì’l‚É–ß‚éB\r\n";
+                dialogText.text = $" ä½¿ç”¨ã—ã¾ã—ãŸÂ¥nÂ¥nåŠ¹æœÂ¥nÂ¥nãƒ»ä½¿ç”¨ã™ã‚‹ã“ã¨ã§ã€æ¬¡ã®ãƒ—ãƒ¬ã‚¤æ™‚ã®ã¿ä¸€æ™‚çš„ã«è‡ªæ©Ÿã®æœ€å¤§HPãŒ2å€ã¨ãªã‚‹ã€‚Â¥rÂ¥nãƒ»ã“ã®åŠ¹æœãŒé©ç”¨ã•ã‚Œã‚‹ã®ã¯ã€ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯å¯¾æˆ¦æ©Ÿèƒ½ã¨ã€ãƒ¬ã‚¤ãƒ‰ãƒãƒˆãƒ«æ©Ÿèƒ½ã®ã¿ã¨ã™ã‚‹ã€‚Â¥nãƒ»ã„ãšã‚Œã‚‚è‡ªæ©Ÿã®HPãŒ0ã¨ãªã£ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§æœ€å¤§HPã¯å…ƒã®å€¤ã«æˆ»ã‚‹ã€‚Â¥rÂ¥n";
                 itemmanager.HandleItemReceived(ItemButtonGameObject);
                 dialogPanel.SetActive(true);
             }
             else
             {
-                dialogText.text = $"\n\n\nŠù‚ÉŒø‰Ê‚ª“K—p‚³‚ê‚Ä‚¢‚Ü‚·B";
+                dialogText.text = $"Â¥nÂ¥nÂ¥næ—¢ã«åŠ¹æœãŒé©ç”¨ã•ã‚Œã¦ã„ã¾ã™ã€‚";
                 dialogPanel.SetActive(true);
             }
         }
@@ -42,19 +42,19 @@ public class DialogManager : MonoBehaviour
         {
             if(UseItemManager.useStamina == false)
             {
-                dialogText.text = $"g—p‚µ‚Ü‚µ‚½\n\nŒø‰Ê\n\n Eg—p‚·‚é‚±‚Æ‚ÅƒvƒŒƒCƒ„[‚ÌƒXƒ^ƒ~ƒi‚ğ1‰ñ•œ‚·‚éB\r\n";
+                dialogText.text = $"ä½¿ç”¨ã—ã¾ã—ãŸÂ¥nÂ¥nåŠ¹æœÂ¥nÂ¥n ãƒ»ä½¿ç”¨ã™ã‚‹ã“ã¨ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ã‚¿ãƒŸãƒŠã‚’1å›å¾©ã™ã‚‹ã€‚Â¥rÂ¥n";
                 itemmanager.HandleItemReceived(ItemButtonGameObject);
                 dialogPanel.SetActive(true);
             }
             else
             {
-                dialogText.text = $"\n\n\nŠù‚ÉŒø‰Ê‚ª“K—p‚³‚ê‚Ä‚¢‚Ü‚·B";
+                dialogText.text = $"Â¥nÂ¥nÂ¥næ—¢ã«åŠ¹æœãŒé©ç”¨ã•ã‚Œã¦ã„ã¾ã™ã€‚";
                 dialogPanel.SetActive(true);
             }
         }
         else
         {
-            dialogText.text = $"\n\n\nƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½";
+            dialogText.text = $"Â¥nÂ¥nÂ¥nã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ";
             dialogPanel.SetActive(true);
         }
 
@@ -62,7 +62,7 @@ public class DialogManager : MonoBehaviour
 
     public void CloseDialog()
     {
-        // ƒ_ƒCƒAƒƒO‚ğ”ñ•\¦
+        // ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’éè¡¨ç¤º
         dialogPanel.SetActive(false);
     }
 }

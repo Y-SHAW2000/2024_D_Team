@@ -12,10 +12,10 @@ public class LoginBonusManager : MonoBehaviour
         userStateManager = FindObjectOfType<UserStateManager>();
         if (userStateManager == null)
         {
-            Debug.LogError("UserStateManager ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI");
+            Debug.LogError("UserStateManager ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼");
             return;
         }
-        Debug.Log("UserStateManager ‚ğæ“¾‚µ‚Ü‚µ‚½B");
+        Debug.Log("UserStateManager ã‚’å–å¾—ã—ã¾ã—ãŸã€‚");
     }
 
     public bool IsNewLogin()
@@ -23,58 +23,58 @@ public class LoginBonusManager : MonoBehaviour
         var playerinfo = userStateManager.CurrentPlayer;
         if (playerinfo == null)
         {
-            Debug.LogError("ƒvƒŒƒCƒ„[î•ñ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             return false;
         }
 
-        // “ú–{ŠÔ‚ÌŒ»İ‚Ì“ú•t‚ğæ“¾
+        // æ—¥æœ¬æ™‚é–“ã®ç¾åœ¨ã®æ—¥ä»˜ã‚’å–å¾—
         DateTime currentJapanDate = DateTime.UtcNow.AddHours(9).Date;
 
-        // ¡“ú‚Ì“ú•t‚ÆˆÙ‚È‚éê‡AV‚µ‚¢ƒƒOƒCƒ“
+        // ä»Šæ—¥ã®æ—¥ä»˜ã¨ç•°ãªã‚‹å ´åˆã€æ–°ã—ã„ãƒ­ã‚°ã‚¤ãƒ³
         if (playerinfo.LastLoginTime.Date != currentJapanDate)
         {
-            Debug.Log($"V‚µ‚¢ƒƒOƒCƒ“‚Å‚·: ‘O‰ñƒƒOƒCƒ“ {playerinfo.LastLoginTime}, ¡“ú {currentJapanDate}");
-            playerinfo.PreviousLoginTime = playerinfo.LastLoginTime; //‘O‰ñ‚ÌƒƒOƒCƒ“‚ğ‹L˜^
-            playerinfo.LastLoginTime = currentJapanDate; // ÅIƒƒOƒCƒ“‚ğXV
+            Debug.Log($"æ–°ã—ã„ãƒ­ã‚°ã‚¤ãƒ³ã§ã™: å‰å›ãƒ­ã‚°ã‚¤ãƒ³ {playerinfo.LastLoginTime}, ä»Šæ—¥ {currentJapanDate}");
+            playerinfo.PreviousLoginTime = playerinfo.LastLoginTime; //å‰å›ã®ãƒ­ã‚°ã‚¤ãƒ³ã‚’è¨˜éŒ²
+            playerinfo.LastLoginTime = currentJapanDate; // æœ€çµ‚ãƒ­ã‚°ã‚¤ãƒ³ã‚’æ›´æ–°
 
-            Debug.Log("ÅIƒƒOƒCƒ““ú‚ğXV" + playerinfo.LastLoginTime);
+            Debug.Log("æœ€çµ‚ãƒ­ã‚°ã‚¤ãƒ³æ—¥ã‚’æ›´æ–°" + playerinfo.LastLoginTime);
 
-            // ƒƒOƒCƒ““ú”‚ğXV
+            // ãƒ­ã‚°ã‚¤ãƒ³æ—¥æ•°ã‚’æ›´æ–°
             playerinfo.Loginday = (playerinfo.Loginday < 7) ? playerinfo.Loginday + 1 : 1;
 
-            // XVŒã‚ÌƒvƒŒƒCƒ„[ƒf[ƒ^‚ğ•Û‘¶
+            // æ›´æ–°å¾Œã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜
             userStateManager.SavePlayerinfo(playerinfo);
 
-            LastLoginTime = currentJapanDate; // ÅIƒƒOƒCƒ“‚ğXV
+            LastLoginTime = currentJapanDate; // æœ€çµ‚ãƒ­ã‚°ã‚¤ãƒ³ã‚’æ›´æ–°
             UseItemManager.GetLogInBonus();
             return true;
         }
         else
         {
-            Debug.Log($"–{“ú‚ÍŠù‚ÉƒƒOƒCƒ“Ï‚İ‚Å‚·: ‘O‰ñƒƒOƒCƒ“ {playerinfo.LastLoginTime}, ¡“ú {currentJapanDate}");
+            Debug.Log($"æœ¬æ—¥ã¯æ—¢ã«ãƒ­ã‚°ã‚¤ãƒ³æ¸ˆã¿ã§ã™: å‰å›ãƒ­ã‚°ã‚¤ãƒ³ {playerinfo.LastLoginTime}, ä»Šæ—¥ {currentJapanDate}");
             return false;
         }
     }
     public void UpdateLoginData()
     {
-        var playerinfo = userStateManager.CurrentPlayer; // Œ»İ‚ÌƒvƒŒƒCƒ„[î•ñ‚ğæ“¾
+        var playerinfo = userStateManager.CurrentPlayer; // ç¾åœ¨ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ã‚’å–å¾—
         if (playerinfo == null)
         {
-            Debug.LogError("ƒvƒŒƒCƒ„[î•ñ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æƒ…å ±ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             return;
         }
 
-        // “ú–{ŠÔ‚ÌŒ»İ‚Ì“ú•t‚ğæ“¾
+        // æ—¥æœ¬æ™‚é–“ã®ç¾åœ¨ã®æ—¥ä»˜ã‚’å–å¾—
         DateTime currentJapanDate = DateTime.UtcNow.AddHours(9).Date;
 
-        // ÅIƒƒOƒCƒ“ŠÔ‚ğXV
+        // æœ€çµ‚ãƒ­ã‚°ã‚¤ãƒ³æ™‚é–“ã‚’æ›´æ–°
         playerinfo.PreviousLoginTime = playerinfo.LastLoginTime;
         playerinfo.LastLoginTime = currentJapanDate;
 
-        // XVŒã‚ÌƒvƒŒƒCƒ„[ƒf[ƒ^‚ğ•Û‘¶
+        // æ›´æ–°å¾Œã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜
         userStateManager.SavePlayerinfo(playerinfo);
 
-        Debug.Log($"ƒƒOƒCƒ“ƒf[ƒ^‚ªXV‚³‚ê‚Ü‚µ‚½: {currentJapanDate}");
+        Debug.Log($"ãƒ­ã‚°ã‚¤ãƒ³ãƒ‡ãƒ¼ã‚¿ãŒæ›´æ–°ã•ã‚Œã¾ã—ãŸ: {currentJapanDate}");
     }
 
 

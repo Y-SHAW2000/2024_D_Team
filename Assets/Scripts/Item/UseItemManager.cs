@@ -6,29 +6,29 @@ public class UseItemManager : MonoBehaviour
 {
     public static bool useStamina = false;
     public static bool useArmor = false;
-    public static bool loginbonus = false; //ƒƒOƒCƒ“ƒ{[ƒiƒX‚ğó‚¯æ‚Á‚½‚©‚Ç‚¤‚©@‰Šú’l@ó‚¯æ‚Á‚½
+    public static bool loginbonus = false; //ãƒ­ã‚°ã‚¤ãƒ³ãƒœãƒ¼ãƒŠã‚¹ã‚’å—ã‘å–ã£ãŸã‹ã©ã†ã‹ã€€åˆæœŸå€¤ã€€å—ã‘å–ã£ãŸ
 
     public static void UseStaminaItem()
     {
         useStamina = true;
-        Debug.Log("ƒXƒ^ƒ~ƒiƒAƒCƒeƒ€‚ªg—p‚³‚ê‚Ü‚µ‚½I");
+        Debug.Log("ã‚¹ã‚¿ãƒŸãƒŠã‚¢ã‚¤ãƒ†ãƒ ãŒä½¿ç”¨ã•ã‚Œã¾ã—ãŸï¼");
     }
 
     public static void UseArmorItem()
     {
         useArmor = true;
-        Debug.Log("ƒA[ƒ}[ƒAƒCƒeƒ€‚ªg—p‚³‚ê‚Ü‚µ‚½I");
+        Debug.Log("ã‚¢ãƒ¼ãƒãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ãŒä½¿ç”¨ã•ã‚Œã¾ã—ãŸï¼");
     }
 
     public static void ResetItemStates()
     {
         useStamina = false;
         useArmor = false;
-        Debug.Log("ƒAƒCƒeƒ€g—pó‘Ô‚ğƒŠƒZƒbƒg‚µ‚Ü‚µ‚½I");
+        Debug.Log("ã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã—ãŸï¼");
     }
     public static void GetLogInBonus()
     {
-        loginbonus = true; //‚Ü‚¾ó‚¯æ‚Á‚Ä‚È‚¢
-        Debug.Log("¡“ú‚ÌƒƒOƒCƒ“ƒ{[ƒiƒX‚Íó‚¯æ‚èÏ‚İI");
+        loginbonus = true; //ã¾ã å—ã‘å–ã£ã¦ãªã„
+        Debug.Log("ä»Šæ—¥ã®ãƒ­ã‚°ã‚¤ãƒ³ãƒœãƒ¼ãƒŠã‚¹ã¯å—ã‘å–ã‚Šæ¸ˆã¿ï¼");
     }
 }

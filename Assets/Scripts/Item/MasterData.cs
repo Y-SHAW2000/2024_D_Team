@@ -25,7 +25,7 @@ public class MasterData : MonoBehaviour
 
         public JsonReaderFromResourcesFolder()
         {
-            // "Assets/Resources/GameItemData.json" ‚Ì Resources “à‚Å‚ÌƒpƒX‚ğw’è
+            // "Assets/Resources/GameItemData.json" ã® Resources å†…ã§ã®ãƒ‘ã‚¹ã‚’æŒ‡å®š
             string filePath = "GameItemData";
             TextAsset file = Resources.Load<TextAsset>(filePath);
 
@@ -35,8 +35,8 @@ public class MasterData : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"JSON ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: {filePath}");
-                items = new ItemDataArray { gameItems = new Item[0] }; // ‹ó‚Ì”z—ñ‚ğ‰Šú‰»
+                Debug.LogError($"JSON ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: {filePath}");
+                items = new ItemDataArray { gameItems = new Item[0] }; // ç©ºã®é…åˆ—ã‚’åˆæœŸåŒ–
             }
         }
 
@@ -48,14 +48,14 @@ public class MasterData : MonoBehaviour
                 {
                     if (item.name == itemName)
                     {
-                        Debug.Log($"ŒÄ‚Ño‚µ‚½ƒAƒCƒeƒ€‚Í: {itemName}’l‚Í{item.effect}");
+                        Debug.Log($"å‘¼ã³å‡ºã—ãŸã‚¢ã‚¤ãƒ†ãƒ ã¯: {itemName}å€¤ã¯{item.effect}");
                         return item.effect;
                     }
                 }
             }
 
-            Debug.LogWarning($"ƒAƒCƒeƒ€‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½: {itemName}");
-            return 0; // ƒfƒtƒHƒ‹ƒg‚ÌŒø‰Ê’l
+            Debug.LogWarning($"ã‚¢ã‚¤ãƒ†ãƒ ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ: {itemName}");
+            return 0; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®åŠ¹æœå€¤
         }
     }
 }
