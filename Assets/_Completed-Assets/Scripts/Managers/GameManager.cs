@@ -49,8 +49,6 @@ namespace Complete
             // ゲーム開始時の待機時間と終了時の待機時間を設定
             m_StartWait = new WaitForSeconds(m_StartDelay);
             m_EndWait = new WaitForSeconds(m_EndDelay);
-
-            // タンクを生成し、カメラターゲットを設定
             SpawnAllTanks();
             SetCameraTargets();
 
@@ -60,54 +58,47 @@ namespace Complete
 
         private void SpawnAllTanks()
         {
-            int localPlayerNumber = PhotonNetwork.LocalPlayer.ActorNumber;
-
-            // ローカルプレイヤーが1番の場合のみ、タンク0を生成
             for (int i = 0; i < m_Tanks.Length; i++)
             {
-                // 自分のタンクを生成
-                if (localPlayerNumber == i + 1)
+                if (PhotonNetwork.IsMasterClient) // マスタークライアントがタンクを生成
                 {
-                    // すでにタンクが生成されている場合はスキップ
-                    if (m_Tanks[i].m_Instance == null)
-                    {
-                        GameObject tankInstance = PhotonNetwork.Instantiate(m_TankPrefab_for_TPS.name, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
-                        if (tankInstance != null)
-                        {
-                            m_Tanks[i].m_Instance = tankInstance;
-                            m_Tanks[i].m_PlayerNumber = i + 1;
-                            m_Tanks[i].Setup();
-                            m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i + 1) + "Slider").GetComponent<Slider>();
-                        }
-                        else
-                        {
-                            Debug.LogError("Failed to instantiate tank for player " + (i + 1));
-                        }
-                    }
-                }
-                else
-                {
-                    // 対戦相手のタンクが生成されている場合、同期を確認
-                    if (m_Tanks[i].m_Instance == null)
-                    {
-                        // 対戦相手がタンクを生成しているかチェック
-                        GameObject tankInstance = PhotonNetwork.Instantiate(m_TankPrefab_for_TPS.name, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
-                        if (tankInstance != null)
-                        {
-                            m_Tanks[i].m_Instance = tankInstance;
-                            m_Tanks[i].m_PlayerNumber = i + 1;
-                            m_Tanks[i].Setup();
-                            m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i + 1) + "Slider").GetComponent<Slider>();
-                        }
-                        else
-                        {
-                            Debug.LogError("Failed to instantiate tank for opponent " + (i + 1));
-                        }
-                    }
+                    GameObject tankInstance = PhotonNetwork.Instantiate(
+                        m_TankPrefab_for_TPS.name,
+                        m_Tanks[i].m_SpawnPoint.position,
+                        m_Tanks[i].m_SpawnPoint.rotation);
+
+                    m_Tanks[i].m_Instance = tankInstance;
+                    m_Tanks[i].m_PlayerNumber = i + 1;
+                    m_Tanks[i].Setup();
+
+                    m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider =
+                        GameObject.Find("Player" + (i + 1) + "Slider").GetComponent<Slider>();
+
+                    // 他のクライアントにタンク情報を同期
+                    //PhotonView photonView = PhotonView.Get(this);
+                    //Debug.LogError(photonView);
+                    //photonView.RPC("SyncTank", RpcTarget.Others, i, 
+                    //    tankInstance.transform.position, 
+                    //    tankInstance.transform.rotation);
                 }
             }
         }
 
+        
+        
+
+        [PunRPC]
+        private void SyncTank(int index, Vector3 position, Quaternion rotation)
+        {
+            if (m_Tanks[index].m_Instance == null)
+            {
+                // タンクが存在しない場合に生成
+                GameObject tankInstance = Instantiate(m_TankPrefab, position, rotation);
+                m_Tanks[index].m_Instance = tankInstance;
+                m_Tanks[index].m_PlayerNumber = index + 1;
+                m_Tanks[index].Setup();
+            }
+        }
 
 
         private void SetCameraTargets()
