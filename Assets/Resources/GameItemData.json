@@ -1,0 +1,16 @@
+{
+    "gameItems": [
+        {
+            "name": "戦車の装甲強化",
+            "description": "戦車のHPを2倍にしました。",
+            "effect": 100,
+            "max": 1
+        },
+        {
+            "name": "スタミナ回復アイテム",
+            "description": "スタミナを1回復しました。",
+            "effect": 1,
+            "max": 5
+        }
+    ]
+}

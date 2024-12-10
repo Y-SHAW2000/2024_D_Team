@@ -8,4 +8,5 @@ public static class Scenenames
     public static readonly string TitleScene = "TitleScene";
     public static readonly string HomeScene = "HomeScene";
     public static readonly string LoginBonusScene = "LoginBonusScene";
+    public static readonly string ItemScene = "ItemScene";
 }

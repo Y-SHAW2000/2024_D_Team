@@ -21,11 +21,11 @@ public class LoginBonusDisplay : MonoBehaviour
 
         while (userStateManager.CurrentPlayer == null)
         {
-            Debug.Log("LoginBonusDisplay: CurrentPlayer が設定されるのを待機中...");
+            Debug.Log("CurrentPlayer設定中");
             yield return null;
         }
 
-        Debug.Log("LoginBonusDisplay: CurrentPlayer を認識しました！");
+        Debug.Log("LoginBonusDisplay: CurrentPlayer を認識");
         DisplayLoginBonusStatus();
     }
 
