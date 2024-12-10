@@ -3,10 +3,12 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 namespace Complete
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviourPun
     {
         public int m_NumRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
         public float m_StartDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases.
@@ -61,23 +63,20 @@ namespace Complete
 
         private void SpawnAllTanks()
         {
-            // ... create them, set their player number and references needed for control.
-            m_Tanks[0].m_Instance =
-                Instantiate(m_TankPrefab_for_TPS, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation) as GameObject;
-            m_Tanks[0].m_PlayerNumber = 1;
-            m_Tanks[0].Setup();
-            m_Tanks[0].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + "1" +"Slider").GetComponent<Slider>();
-
+            
             // For all the tanks...
-            for (int i = 1; i < m_Tanks.Length; i++)
+            for (int i = 0; i < m_Tanks.Length; i++)
             {
                 // ... create them, set their player number and references needed for control.
                 m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+                    PhotonNetwork.Instantiate("CompleteTank_for_TPS", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
                 m_Tanks[i].m_PlayerNumber = i + 1;
                 m_Tanks[i].Setup();
                 m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i+1) + "Slider").GetComponent<Slider>();
-
+                if(photonView.IsMine !=true)
+                {
+                    m_Tanks[i].m_Instance.transform.Find("Camera_for_TPS").gameObject.SetActive(false);
+                }
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 namespace Complete
 {
-    public class TankMovement : MonoBehaviour
+    public class TankMovement : MonoBehaviourPun
     {
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
@@ -75,8 +77,8 @@ namespace Complete
         private void Start()
         {
             // The axes names are based on player number.
-            m_MovementAxisName = "Vertical" + m_PlayerNumber;
-            m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+            m_MovementAxisName = "Vertical1";
+            m_TurnAxisName = "Horizontal1";
 
             m_TurretRotationName = "TurretTurn" + m_PlayerNumber; // 砲塔を回転するキーの名前
             // Store the original pitch of the audio source.
@@ -86,13 +88,16 @@ namespace Complete
 
         private void Update()
         {
-            // Store the value of both input axes.
-            m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
-            m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+            //if (photonView.IsMine)
+            //{
+                // Store the value of both input axes.
+                m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+                m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
 
-            m_TurretRotationInput = Input.GetAxis(m_TurretRotationName);
+                m_TurretRotationInput = Input.GetAxis(m_TurretRotationName);
 
-            EngineAudio();
+                EngineAudio();
+            //}
         }
 
 
@@ -127,9 +132,14 @@ namespace Complete
         private void FixedUpdate()
         {
             // Adjust the rigidbodies position and orientation in FixedUpdate.
-            Move();
+            if(photonView.IsMine)
+            {
+                Debug.Log("0");
+                Move();
             Turn();
             TurretTurn(); //呼び出す
+            }
+            
 
         }
 
