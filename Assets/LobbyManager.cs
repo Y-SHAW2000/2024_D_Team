@@ -105,7 +105,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (allPlayersReady)
         {
             Debug.Log("Both players are ready! Moving to battle scene.");
-            SceneManager.LoadScene("_Complete-Game");
+            PhotonNetwork.LoadLevel("_Complete-Game");
         }
         else
         {

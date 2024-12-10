@@ -19,7 +19,7 @@ public class PlayerVersusButton : MonoBehaviour
     private void OnClicked()
     {
         
-        SceneManager.LoadScene(Scenenames.CompleteGame);
+        SceneManager.LoadScene("LobbyScene");
 
     }
     void Update()

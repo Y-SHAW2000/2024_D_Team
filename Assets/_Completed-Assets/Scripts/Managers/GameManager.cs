@@ -73,11 +73,11 @@ namespace Complete
                 m_Tanks[i].m_PlayerNumber = i + 1;
                 m_Tanks[i].Setup();
                 m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i+1) + "Slider").GetComponent<Slider>();
-                if(!photonView.IsMine)
+                //if(!photonView.IsMine)
                 //if()
-                {
+                //{
                    // m_Tanks[i].m_Instance.transform.Find("Camera_for_TPS").gameObject.SetActive(false);
-                }
+                //}
             }
         }
 
