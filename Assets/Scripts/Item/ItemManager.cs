@@ -33,7 +33,7 @@ public class ItemManager : MonoBehaviour
         if (playerinfo != null)
         {
 
-            if (ItemButtonGameObject.name == "Defence_Use_Button" && playerinfo.ArmorItem >= 1)
+            if (ItemButtonGameObject.name == "Defence_Use_Button" && playerinfo.ArmorItem >= 1 )
             {
                 playerinfo.ArmorItem -= 1;
                 UseItemManager.UseArmorItem();
@@ -41,6 +41,7 @@ public class ItemManager : MonoBehaviour
             if (ItemButtonGameObject.name == "Stamina_Use_Button" && playerinfo.StaminaItem >= 1)
             {
                 playerinfo.StaminaItem -= 1;
+                playerinfo.Stamina += 1;
                 UseItemManager.UseStaminaItem();
             }
             Debug.Log($"アイテムを使用したarmor : {playerinfo.ArmorItem} stamina: {playerinfo.StaminaItem}");

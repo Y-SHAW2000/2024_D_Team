@@ -163,6 +163,7 @@ namespace Complete
                 else
                 {
                     Debug.LogError("アーマーアイテムの効果が見つからないか、効果が 0 です。");
+                    tankarmor.HideArmorBar(); // アーマーバーを非表示
                 }
             }
             else

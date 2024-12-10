@@ -27,6 +27,7 @@ public class TankArmorHealth : MonoBehaviour
             if(currentArmorValue == 0)
             {
                 Debug.Log("アーマーが0になっちゃった");
+                HideArmorBar(); // スライダーを非表示
             }
 
             // アーマーの値を現在の値に更新
@@ -38,4 +39,12 @@ public class TankArmorHealth : MonoBehaviour
             Debug.LogWarning("m_Slider200 が設定されていません。");
         }
     }
+        // アーマーバーを非表示にする
+        public void HideArmorBar()
+        {
+            if (m_Slider200 != null)
+            {
+                m_Slider200.gameObject.SetActive(false);
+            }
+        }
 }
