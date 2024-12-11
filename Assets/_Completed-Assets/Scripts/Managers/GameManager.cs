@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
 
 namespace Complete
 {
@@ -55,32 +56,28 @@ namespace Complete
             SetCameraTargets();
 
             // Once the tanks have been created and the camera is using them as targets, start the game.
-            StartCoroutine(GameLoop());
+            //StartCoroutine(GameLoop());
         }
 
 
         private void SpawnAllTanks()
         {
-            // ... create them, set their player number and references needed for control.
-            m_Tanks[0].m_Instance =
-                Instantiate(m_TankPrefab_for_TPS, m_Tanks[0].m_SpawnPoint.position, m_Tanks[0].m_SpawnPoint.rotation) as GameObject;
-            m_Tanks[0].m_PlayerNumber = 1;
-            m_Tanks[0].Setup();
-            m_Tanks[0].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + "1" +"Slider").GetComponent<Slider>();
-
-            // For all the tanks...
-            for (int i = 1; i < m_Tanks.Length; i++)
+            if (PhotonNetwork.IsMasterClient)
             {
-                // ... create them, set their player number and references needed for control.
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
-                m_Tanks[i].m_PlayerNumber = i + 1;
-                m_Tanks[i].Setup();
-                m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i+1) + "Slider").GetComponent<Slider>();
-
+                // For all the tanks...
+                for (int i = 0; i < m_Tanks.Length; i++)
+                {
+                    // ... create them, set their player number and references needed for control.
+                    m_Tanks[i].m_Instance =
+                        PhotonNetwork.Instantiate("CompleteTank_for_TPS", m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation);
+                    m_Tanks[i].m_PlayerNumber = i + 1;
+                    m_Tanks[i].Setup();
+                    m_Tanks[i].m_Instance.GetComponent<TankHealth>().m_Slider = GameObject.Find("Player" + (i+1) + "Slider").GetComponent<Slider>();
+                }  
             }
         }
 
+        
 
         private void SetCameraTargets()
         {
