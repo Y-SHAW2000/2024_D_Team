@@ -56,7 +56,7 @@ namespace Complete
             SetCameraTargets();
 
             // Once the tanks have been created and the camera is using them as targets, start the game.
-            StartCoroutine(GameLoop());
+            //StartCoroutine(GameLoop());
         }
 
 
