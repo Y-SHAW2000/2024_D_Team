@@ -1,64 +1,68 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Complete;
+using Photon.Pun;
 
 public class CartridgeSpawner : MonoBehaviour
 {
     [SerializeField]
-    private GameObject CartridgePrefab;
+    private Vector2 spawnAreaMin; // スポーンエリアの最小値 (X, Z 座標)
     [SerializeField]
-    private CartridgeData cartridgedata;
+    private Vector2 spawnAreaMax; // スポーンエリアの最大値 (X, Z 座標)
     [SerializeField]
-    private Vector2 spawnAreaMin; // �����͈͂̍ŏ��l�iX, Z���W�j
-    [SerializeField]
-    private Vector2 spawnAreaMax; // �����͈͂̍ő�l�iX, Z���W�j
+    private float spawnInterval = 5f; // カートリッジのスポーン間隔
 
     private Complete.GameManager gameManager; 
 
-    // Start is called before the first frame update
     void Start()
     {
-        gameManager = FindObjectOfType<Complete.GameManager>(); //�Q�[���I�u�W�F�N�g�ւ̎Q��
+        gameManager = FindObjectOfType<Complete.GameManager>();
 
-        // OnGameStateChanged �C�x���g�� HandleGameStateChanged ��o�^
+        // ゲーム状態変更時のイベントハンドラーを登録
         gameManager.OnGameStateChanged += HandleGameStateChanged;
     }
 
-    private void HandleGameStateChanged(Complete.GameManager.GameState gameState) //�q���[�`���̊J�n�E��~
+    private void OnDestroy()
     {
-        if (gameState == Complete.GameManager.GameState.RoundPlaying)
+        // イベントハンドラーを解除
+        if (gameManager != null)
         {
-            // �Q�[���v���C���Ȃ� SpawnRoutine �R���[�`�����J�n
-            StartCoroutine(SpawnRoutine(cartridgedata));
-        }
-        else
-        {
-            // �Q�[�����v���C���łȂ��Ȃ�R���[�`�����~
-            StopCoroutine(SpawnRoutine(cartridgedata));
+            gameManager.OnGameStateChanged -= HandleGameStateChanged;
         }
     }
 
-
-    // �J�[�g���b�W�������_���Ȉʒu�ɐ������郁�\�b�h
-    private void SpawnCartridge(CartridgeData data)
+    private void HandleGameStateChanged(Complete.GameManager.GameState gameState)
     {
-        // �����_���Ȉʒu���v�Z
-        float randomX = Random.Range(spawnAreaMin.x, spawnAreaMax.x);//x���W�̒u����ʒu
-        float randomZ = Random.Range(spawnAreaMin.y, spawnAreaMax.y);//z���W�̒u����ʒu
-        Vector3 spawnPosition = new Vector3(randomX, 0f, randomZ); // �n�ʂɔz�u���邽��Y���W��0
-
-        // �J�[�g���b�W�𐶐�
-        Instantiate(CartridgePrefab, spawnPosition, Quaternion.identity);
+        if (PhotonNetwork.IsMasterClient) // マスタークライアントのみスポーン処理を行う
+        {
+            if (gameState == Complete.GameManager.GameState.RoundPlaying)
+            {
+                StartCoroutine(SpawnRoutine());
+            }
+            else
+            {
+                StopAllCoroutines(); // 他の状態ではスポーンを停止
+            }
+        }
     }
 
-    // ���Ԋu�ŃJ�[�g���b�W�𐶐�����R���[�`��
-    private IEnumerator SpawnRoutine(CartridgeData data)
+    private IEnumerator SpawnRoutine()
     {
         while (true)
         {
-            SpawnCartridge(data); // �J�[�g���b�W�𐶐�
-            yield return new WaitForSeconds(data.spawnInterval); // spawnInterval�b�ҋ@
+            SpawnCartridge();
+            yield return new WaitForSeconds(spawnInterval);
         }
+    }
+
+    private void SpawnCartridge()
+    {
+        // ランダムなスポーン位置を計算
+        float randomX = Random.Range(spawnAreaMin.x, spawnAreaMax.x);
+        float randomZ = Random.Range(spawnAreaMin.y, spawnAreaMax.y);
+        Vector3 spawnPosition = new Vector3(randomX, 0f, randomZ);
+
+        // MineCartridge と ShellCartridge をスポーン
+        PhotonNetwork.Instantiate("MineCartridge", spawnPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate("ShellCartridge", spawnPosition, Quaternion.identity);
     }
 }

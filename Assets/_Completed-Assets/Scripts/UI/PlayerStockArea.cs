@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Complete;
+using Photon.Pun;
 
-public class PlayerStockArea : MonoBehaviour
+
+public class PlayerStockArea : MonoBehaviourPun
 {
     // �e�̎Q�� (Shell1�`Shell10)
     [SerializeField] private Image[] SingleBullet;
@@ -47,29 +49,38 @@ public class PlayerStockArea : MonoBehaviour
 
 
 
-    // �X�g�b�N���ɉ����ĖC�e�A�C�R����\������
+    // プレイヤーストックエリアを更新
     public void UpdatePlayerStockArea(Dictionary<string, int> weaponStock)
     {
-        // 1���A�C�R���̕\���E��\���ݒ�
+        // PUN2 RPCで更新を通知
+        photonView.RPC("SyncWeaponStock", RpcTarget.All, weaponStock);
+    }
+
+    // RPCメソッドで、武器在庫の変更を全クライアントに通知
+    [PunRPC]
+    private void SyncWeaponStock(Dictionary<string, int> weaponStock)
+    {
+        // シェルの個数に基づいて表示を更新
         for (int i = 0; i < SingleBullet.Length; i++)
         {
             if (weaponStock["Shell"] != 50)
             {
-                // stockCount�ɂ���ăA�C�R����\���E��\��
-                SingleBullet[i].gameObject.SetActive(i < weaponStock["Shell"] % 10); //()���𖞂������\������
+                SingleBullet[i].gameObject.SetActive(i < weaponStock["Shell"] % 10);
             }
             else
             {
                 SingleBullet[i].gameObject.SetActive(i < 10);
             }
         }
-        // 10���A�C�R���̕\���E��\���ݒ�
+
+        // 10個単位のシェル
         int TenCount = weaponStock["Shell"] / 10;
         for (int i = 0; i < Bullets.Length; i++)
         {
             Bullets[i].gameObject.SetActive(i < TenCount);
         }
-        
+
+        // マインの表示を更新
         for (int i = 0; i < Mines.Length; i++)
         {
             Mines[i].gameObject.SetActive(i < weaponStock["Mine"]);

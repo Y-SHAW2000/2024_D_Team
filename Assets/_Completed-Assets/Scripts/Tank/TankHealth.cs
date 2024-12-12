@@ -2,10 +2,11 @@
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 namespace Complete
 {
-    public class TankHealth : MonoBehaviour
+    public class TankHealth : MonoBehaviourPun
     {
         public float m_StartingHealth = 100f;               // The amount of health each tank starts with.
         public Slider m_Slider;                             // The slider to represent how much health the tank currently has.
@@ -90,8 +91,8 @@ namespace Complete
                 m_CurrentHealth -= amount;
                 Debug.Log($"アーマーなし: 直接体力にダメージ適用。受けたダメージは: {amount}currenthealthは {m_CurrentHealth}");
             }
-
-            // HPバーの更新
+            // PUN2で同期を取るためにRPCでHP更新
+            photonView.RPC("SyncHealth", RpcTarget.All, m_CurrentHealth, m_Slider200.value);
             SetHealthUI();
 
             // 体力が0以下になった場合の処理
@@ -100,7 +101,15 @@ namespace Complete
                 OnDeath();
             }
         }
+        // RPCメソッドでHPを同期
+        [PunRPC]
+        private void SyncHealth(float currentHealth, float armorHealth)
+        {
+            m_CurrentHealth = currentHealth;
+            m_Slider200.value = armorHealth;
 
+            SetHealthUI();
+        }
 
 
         private void SetHealthUI ()
@@ -126,23 +135,25 @@ namespace Complete
 
         private void OnDeath ()
         {
-            // Set the flag so that this function is only called once.
-            m_Dead = true;
-
-            // Move the instantiated explosion prefab to the tank's position and turn it on.
-            m_ExplosionParticles.transform.position = transform.position;
-            m_ExplosionParticles.gameObject.SetActive (true);
-
-            // Play the particle system of the tank exploding.
-            m_ExplosionParticles.Play ();
-
-            // Play the tank explosion sound effect.
-            m_ExplosionAudio.Play();
-
-            // Turn the tank off.
-            gameObject.SetActive (false);
+            photonView.RPC("OnDeathSync", RpcTarget.All);
         }
+        [PunRPC]
+        private void OnDeathSync()
+        {
+            if (!m_Dead) // 既に死んでいなければ
+            {
+                m_Dead = true;
 
+                // 爆発エフェクトの表示
+                m_ExplosionParticles.transform.position = transform.position;
+                m_ExplosionParticles.gameObject.SetActive(true);
+                m_ExplosionParticles.Play();
+                m_ExplosionAudio.Play();
+
+                // タンクを非表示にする
+                gameObject.SetActive(false);
+            }
+        }
         private void CheckItemUse()
         {
             Debug.Log("使用したアイテムがあるかチェックしてるよ");
