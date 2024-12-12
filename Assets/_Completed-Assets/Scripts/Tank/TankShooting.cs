@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Photon.Pun;
 namespace Complete
 {
     public class TankShooting : MonoBehaviour
@@ -123,9 +123,7 @@ namespace Complete
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
-                Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
-
-            // Set the shell's velocity to the launch force in the fire position's forward direction.
+                Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation);
             shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
             // Change the clip to the firing clip and play it.
@@ -174,7 +172,7 @@ namespace Complete
                 // 地雷を生成
                 Vector3 spawnPosition = m_FireTransform.position + m_FireTransform.forward * 2f; // 地雷の発射位置（タンクの前方）
                 spawnPosition.y = m_FireTransform.position.y - 1f; // タンクの位置より1単位低い位置に設定（適宜調整）
-                Instantiate(MinePrefab, spawnPosition, Quaternion.identity); // 地雷を設置
+                PhotonNetwork.Instantiate("Mine", spawnPosition, Quaternion.identity); // 地雷を設置
 
                 // 所持数をデクリメント
                 weaponCount.DecreaseCount("Mine"); // 所持数を1減らす
