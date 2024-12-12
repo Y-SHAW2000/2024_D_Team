@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime; 
 
 namespace Complete
 {
@@ -105,9 +106,38 @@ namespace Complete
                 {
                     Debug.LogWarning($"Slider for Player {i + 1} not found.");
                 }
+                if (i == 0)
+                {
+                    Debug.Log("Assigning local player ownership to Tank 0.");
+                    // ローカルプレイヤーは自動的に所有権を持つため特に処理不要
+                }
+                // リモートプレイヤー用タンク (Player 1)
+                else if (i == 1)
+                {
+                    Debug.Log("Assigning remote player ownership to Tank 1.");
+                    // 対戦相手にオーナーシップを移譲
+                        
+                    Player opponent = PhotonNetwork.PlayerListOthers[0]; // 相手プレイヤーを取得
+                    if (photonView.Owner != opponent)
+                    {
+                        Debug.Log(opponent);
+                        photonView.TransferOwnership(opponent);
+                    }
+                }
+                
+                
+            }
+            PhotonView tank0View = m_Tanks[0].m_Instance.GetComponent<PhotonView>();
+            if (tank0View != null)
+            {
+                Debug.Log($"Tank 0 Owner: {tank0View.Owner.NickName} (Player ID: {tank0View.Owner.ActorNumber})");
+            }     
+            PhotonView tank1View = m_Tanks[1].m_Instance.GetComponent<PhotonView>();
+            if (tank1View != null)
+            {
+                Debug.Log($"Tank 1 Owner: {tank1View.Owner.NickName} (Player ID: {tank1View.Owner.ActorNumber})");
             }
         }
-
         private void SetCameraTargets()
         {
             if (m_Tanks == null || m_Tanks.Length == 0)

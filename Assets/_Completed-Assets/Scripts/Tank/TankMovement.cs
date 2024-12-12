@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 namespace Complete
 {
-    public class TankMovement : MonoBehaviour
+    public class TankMovement : MonoBehaviourPun
     {
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
@@ -126,6 +128,10 @@ namespace Complete
 
         private void FixedUpdate()
         {
+            if (!photonView.IsMine)
+            {
+                return; // 他プレイヤーのタンクは操作不可
+            }
             // Adjust the rigidbodies position and orientation in FixedUpdate.
             Move();
             Turn();
