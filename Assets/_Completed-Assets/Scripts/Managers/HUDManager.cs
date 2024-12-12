@@ -2,29 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Complete;
+using Photon.Pun;
 
 namespace Complete
 {
-    public class HudManager : MonoBehaviour
+    public class HudManager : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private PlayerStockArea player1StockArea; // Player1 �� HUD   PlayerStockArea
-        [SerializeField] private PlayerStockArea player2StockArea; // Player2 �� HUD
-        [SerializeField] private Complete.GameManager gameManager; // GameManager �ւ̎Q��
-        [SerializeField] private Complete.TankManager tankManager; //TankManager�ւ̎Q��
+        [SerializeField] private PlayerStockArea player1StockArea; // Player1のHUD
+        [SerializeField] private PlayerStockArea player2StockArea; // Player2のHUD
+        [SerializeField] private Complete.GameManager gameManager; // GameManager
+        [SerializeField] private Complete.TankManager tankManager; // TankManager
 
         private void Start()
         {
             if (gameManager != null)
             {
-                gameManager.OnGameStateChanged += HandleGameStateChanged; //�C�x���g�̓o�^
+                gameManager.OnGameStateChanged += HandleGameStateChanged;
                 foreach (var tank in gameManager.m_Tanks)
                 {
                     tank.OnWeaponStockChanged += UpdatePlayerStockArea;
-                }//tankManager.OnWeaponStockChanged += UpdatePlayerStockArea;
+                }
             }
         }
 
-        private void OnDestroy() //�C�x���g�̉���
+        private void OnDestroy()
         {
             if (gameManager != null)
             {
@@ -32,7 +33,7 @@ namespace Complete
             }
         }
 
-        private void HandleGameStateChanged(Complete.GameManager.GameState gameState)    // �Q�[���̏�Ԃɉ����� HUD �̕\��/��\����؂�ւ���
+        private void HandleGameStateChanged(Complete.GameManager.GameState gameState)
         {
             if (gameState == Complete.GameManager.GameState.RoundPlaying)
             {
@@ -45,7 +46,20 @@ namespace Complete
                 player2StockArea.gameObject.SetActive(false);
             }
         }
-        private void UpdatePlayerStockArea(int playerNumber, Dictionary<string, int> weaponStock)  // �v���C���[�ԍ��ɉ����� HUD �̖C�e�X�g�b�N�����X�V
+
+        // プレイヤーの武器在庫が変化したときに呼ばれる
+        private void UpdatePlayerStockArea(int playerNumber, Dictionary<string, int> weaponStock)
+        {
+            // PUN2 RPCを使って他のプレイヤーに同期
+            if (PhotonNetwork.IsMasterClient)  // マスタークライアントが変更を通知
+            {
+                photonView.RPC("SyncWeaponStock", RpcTarget.All, playerNumber, weaponStock);
+            }
+        }
+
+        // RPCで武器在庫を全プレイヤーに同期
+        [PunRPC]
+        private void SyncWeaponStock(int playerNumber, Dictionary<string, int> weaponStock)
         {
             if (playerNumber == 1)
             {
