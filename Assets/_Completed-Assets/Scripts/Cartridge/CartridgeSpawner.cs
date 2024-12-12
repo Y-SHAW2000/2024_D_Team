@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Complete;
+using Photon.Pun;
 
 public class CartridgeSpawner : MonoBehaviour
 {
@@ -49,7 +50,8 @@ public class CartridgeSpawner : MonoBehaviour
         Vector3 spawnPosition = new Vector3(randomX, 0f, randomZ); // �n�ʂɔz�u���邽��Y���W��0
 
         // �J�[�g���b�W�𐶐�
-        Instantiate(CartridgePrefab, spawnPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate("MineCartridge", spawnPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate("ShellCartridge", spawnPosition, Quaternion.identity);
     }
 
     // ���Ԋu�ŃJ�[�g���b�W�𐶐�����R���[�`��
