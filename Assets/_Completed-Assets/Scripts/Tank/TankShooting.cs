@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
+using Photon.Pun; 
+
 namespace Complete
 {
-    public class TankShooting : MonoBehaviour
+    public class TankShooting : MonoBehaviourPunCallbacks 
     {
         public int m_PlayerNumber = 1;              // Used to identify the different players.
         public Rigidbody m_Shell;                   // Prefab of the shell.
@@ -40,7 +41,7 @@ namespace Complete
         private Dictionary<string, int> weaponData; //武器の所持数管理用
 
 
-        private void OnEnable()
+        private new void OnEnable()
         {
             // When the tank is turned on, reset the launch force and the UI
             m_CurrentLaunchForce = m_MinLaunchForce;
@@ -64,55 +65,58 @@ namespace Complete
 
         private void Update()
         {
-            if (weaponCount.GetCurrent("Shell") > 0) // 弾数が0でないときのみ処理
+            if (photonView.IsMine)  // 自分の戦車に対してのみ処理
             {
-                if (Input.GetButton(m_FireButton)) // ボタンが押されている間
+                if (weaponCount.GetCurrent("Shell") > 0) // 弾数が0でないときのみ処理
                 {
-                    if (Increasing)
+                    if (Input.GetButton(m_FireButton)) // ボタンが押されている間
                     {
-                        m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
-                        if (m_CurrentLaunchForce >= m_MaxLaunchForce)
+                        if (Increasing)
                         {
-                            m_CurrentLaunchForce = m_MaxLaunchForce;
-                            Increasing = false; // 減少に切り替え
+                            m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+                            if (m_CurrentLaunchForce >= m_MaxLaunchForce)
+                            {
+                                m_CurrentLaunchForce = m_MaxLaunchForce;
+                                Increasing = false; // 減少に切り替え
+                            }
                         }
+                        else
+                        {
+                            m_CurrentLaunchForce -= m_ChargeSpeed * Time.deltaTime;
+                            if (m_CurrentLaunchForce <= m_MinLaunchForce)
+                            {
+                                m_CurrentLaunchForce = m_MinLaunchForce;
+                                Increasing = true; // 増加に切り替え
+                            }
+                        }
+
+                        // スライダーを現在の発射力に合わせて更新
+                        m_AimSlider.value = m_CurrentLaunchForce;
                     }
-                    else
+
+                    if (Input.GetButtonDown(m_FireButton)) // ボタンが押されたときに発射準備
                     {
-                        m_CurrentLaunchForce -= m_ChargeSpeed * Time.deltaTime;
-                        if (m_CurrentLaunchForce <= m_MinLaunchForce)
-                        {
-                            m_CurrentLaunchForce = m_MinLaunchForce;
-                            Increasing = true; // 増加に切り替え
-                        }
+                        m_Fired = false;
+                        m_CurrentLaunchForce = m_MinLaunchForce;
+                        m_ShootingAudio.clip = m_ChargingClip;
+                        m_ShootingAudio.Play();
                     }
 
-                    // スライダーを現在の発射力に合わせて更新
-                    m_AimSlider.value = m_CurrentLaunchForce;
+                    if (Input.GetButtonUp(m_FireButton) && !m_Fired) // ボタンが離されたら発射
+                    {
+                        photonView.RPC("Fire", RpcTarget.All);
+                        m_CurrentLaunchForce = m_MinLaunchForce;
+                        m_AimSlider.value = m_MinLaunchForce;
+                    }
                 }
-
-                if (Input.GetButtonDown(m_FireButton)) // ボタンが押されたときに発射準備
+                if (Input.GetButtonDown(m_PlaceMine)) // ボタンが押されている間
                 {
-                    m_Fired = false;
-                    m_CurrentLaunchForce = m_MinLaunchForce;
-                    m_ShootingAudio.clip = m_ChargingClip;
-                    m_ShootingAudio.Play();
+                    photonView.RPC("PlaceMine", RpcTarget.All);
                 }
-
-                if (Input.GetButtonUp(m_FireButton) && !m_Fired) // ボタンが離されたら発射
-                {
-                    Fire();
-                    m_CurrentLaunchForce = m_MinLaunchForce;
-                    m_AimSlider.value = m_MinLaunchForce;
-                }
-            }
-            if (Input.GetButtonDown(m_PlaceMine)) // ボタンが押されている間
-            {
-                PlaceMine();
             }
         }
 
-
+        [PunRPC]
         private void Fire()
         {
             if (weaponCount.weaponStock["Shell"] <= 0) return; // 弾がない場合は発射できない
@@ -123,7 +127,9 @@ namespace Complete
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
-                Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation);
+                Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+            // Set the shell's velocity to the launch force in the fire position's forward direction.
             shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
             // Change the clip to the firing clip and play it.
@@ -136,6 +142,7 @@ namespace Complete
 
         }
 
+        [PunRPC]
         public void Reload()
         {
             weaponCount.weaponStock["Shell"] += weaponCount.weaponReplenishment["Shell"];
@@ -150,16 +157,25 @@ namespace Complete
         {
             if (collision.gameObject.CompareTag("ShellCartridge")) //ShellCartridgeタグのついたものが触れたら(今回は)
             {
-                Reload(); // リロード
-                Destroy(collision.gameObject); // 衝突したカートリッジを消滅
+                photonView.RPC("IncreaseMineCount", RpcTarget.All);
+                photonView.RPC("DestroyCartridge", RpcTarget.All, collision.gameObject.GetPhotonView().ViewID); // 全プレイヤーに通知
             }
             if (collision.gameObject.CompareTag("MineCartridge"))
             {
-                weaponCount.IncreaseCount("Mine", 1);
+                photonView.RPC("IncreaseMineCount", RpcTarget.All); 
+                photonView.RPC("DestroyCartridge", RpcTarget.All, collision.gameObject.GetPhotonView().ViewID); // カートリッジを消滅
                 OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); // イベントを発生
-                Destroy(collision.gameObject);
+                
             }
         }
+        [PunRPC]
+        private void DestroyCartridge(int viewID)
+        {
+            GameObject cartridge = PhotonView.Find(viewID).gameObject; // ViewIDを使って対象のオブジェクトを取得
+            Destroy(cartridge); // オブジェクトを破棄
+        }
+
+        [PunRPC]
         private void PlaceMine()
         {
             if (MinePrefab == null)
@@ -172,7 +188,7 @@ namespace Complete
                 // 地雷を生成
                 Vector3 spawnPosition = m_FireTransform.position + m_FireTransform.forward * 2f; // 地雷の発射位置（タンクの前方）
                 spawnPosition.y = m_FireTransform.position.y - 1f; // タンクの位置より1単位低い位置に設定（適宜調整）
-                PhotonNetwork.Instantiate("Mine", spawnPosition, Quaternion.identity); // 地雷を設置
+                Instantiate(MinePrefab, spawnPosition, Quaternion.identity); // 地雷を設置
 
                 // 所持数をデクリメント
                 weaponCount.DecreaseCount("Mine"); // 所持数を1減らす
@@ -182,8 +198,18 @@ namespace Complete
 
                 // 所持数の変化を通知
                 OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); //イベントを発生
+
+                // 地雷に設置したプレイヤーの情報を格納（photonView.Ownerは設置したプレイヤー）
+                //mine.GetComponent<Mine>().SetOwner(photonView.Owner);
            }
 
         }
+    
+        [PunRPC]
+        private void IncreaseMineCount()
+        {
+            weaponCount.IncreaseCount("Mine", 1);
+            OnWeaponStockChanged?.Invoke(weaponCount.weaponStock); // イベントを発生
+        }    
     }
 }
