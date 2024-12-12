@@ -44,6 +44,7 @@ namespace Complete
         [PunRPC]
         private void SyncGameState(GameState newState)
         {
+            Debug.Log($"SyncGameState called on {PhotonNetwork.NickName}: {newState}");
             currentGameState = newState;
             OnGameStateChanged?.Invoke(newState);
         }
@@ -51,7 +52,7 @@ namespace Complete
         private void Start()
         {
             OnGameStateChanged += HandleGameStateChanged;
-
+            PhotonNetwork.AutomaticallySyncScene = true; //画面の自動遷移
             SetGameState(GameState.RoundStarting);
 
             m_StartWait = new WaitForSeconds(m_StartDelay);
@@ -141,7 +142,10 @@ namespace Complete
 
             if (m_GameWinner != null)
             {
-                SceneManager.LoadScene("TitleScene");
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.LoadLevel("TitleScene");
+                }
             }
             else
             {
