@@ -7,7 +7,7 @@ using Photon.Pun;
 
 namespace Complete
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviourPunCallbacks
     {
         public int m_NumRoundsToWin = 5;            // The number of rounds a single player has to win to win the game.
         public float m_StartDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases.
@@ -34,15 +34,18 @@ namespace Complete
         public GameState currentGameState; // 現在のゲーム状態を保持する変数
 
         public event Action<GameState> OnGameStateChanged; // 状態変更時に発生するイベント
-
+    
         public void SetGameState(GameState newState)
         {
-            if (currentGameState != newState)
-            {
-                currentGameState = newState;
-                Debug.Log($"Changing game state to: {newState}");
-                OnGameStateChanged?.Invoke(newState); // 状態が変更されたらイベントを発生
-            }
+            photonView.RPC("SyncGameState", RpcTarget.All, newState);   
+        }
+
+        // RPCメソッドで他のクライアントの状態を同期
+        [PunRPC]
+        private void SyncGameState(GameState newState)
+        {
+            currentGameState = newState;
+            OnGameStateChanged?.Invoke(newState);
         }
 
         private void Start()
@@ -56,7 +59,10 @@ namespace Complete
 
             SpawnAllTanks();
             SetCameraTargets();
-            StartCoroutine(GameLoop());
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(GameLoop());
+            }
         }
 
         private void OnDestroy()
