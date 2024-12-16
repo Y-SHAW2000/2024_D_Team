@@ -25,7 +25,10 @@ namespace Complete
         private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won.
         private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won.
 
-        public enum GameState // 状態を表す列挙型
+
+        public RankingManager rankingManager;
+
+        public enum GameState //状態を表す列挙列
         {
             RoundStarting,  // ゲームの開始処理
             RoundPlaying,   // ゲームのプレイ中
@@ -172,10 +175,17 @@ namespace Complete
 
             if (m_GameWinner != null)
             {
-                if (PhotonNetwork.IsMasterClient)
+                // If there is a game winner, restart the level.
+                //SceneManager.LoadScene(Scenenames.TitleScene);
+                if(m_GameWinner == m_Tanks[0])
                 {
-                    PhotonNetwork.LoadLevel("TitleScene");
+                    rankingManager.Rank(true);
                 }
+                else
+                {
+                    rankingManager.Rank(false);
+                }
+                
             }
             else
             {
