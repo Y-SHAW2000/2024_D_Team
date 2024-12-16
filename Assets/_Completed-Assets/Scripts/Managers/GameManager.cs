@@ -25,10 +25,8 @@ namespace Complete
         private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won.
         private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won.
 
-
         public RankingManager rankingManager;
-
-        public enum GameState //状態を表す列挙列
+        public enum GameState // 状態を表す列挙型
         {
             RoundStarting,  // ゲームの開始処理
             RoundPlaying,   // ゲームのプレイ中
@@ -121,25 +119,21 @@ namespace Complete
                     // 対戦相手にオーナーシップを移譲
                         
                     Player opponent = PhotonNetwork.PlayerListOthers[0]; // 相手プレイヤーを取得
-                    if (photonView.Owner != opponent)
+                    PhotonView tankPhotonView = m_Tanks[i].m_Instance.GetComponent<PhotonView>();
+                    if (tankPhotonView != null)
                     {
-                        Debug.Log(opponent);
-                        photonView.TransferOwnership(opponent);
+                        tankPhotonView.TransferOwnership(opponent);
+                        Debug.Log($"Ownership transferred to {opponent.NickName}");
+                    }
+                    else
+                    {
+                        Debug.LogError("Tank 1's PhotonView is missing!");
                     }
                 }
                 
                 
             }
-            PhotonView tank0View = m_Tanks[0].m_Instance.GetComponent<PhotonView>();
-            if (tank0View != null)
-            {
-                Debug.Log($"Tank 0 Owner: {tank0View.Owner.NickName} (Player ID: {tank0View.Owner.ActorNumber})");
-            }     
-            PhotonView tank1View = m_Tanks[1].m_Instance.GetComponent<PhotonView>();
-            if (tank1View != null)
-            {
-                Debug.Log($"Tank 1 Owner: {tank1View.Owner.NickName} (Player ID: {tank1View.Owner.ActorNumber})");
-            }
+            
         }
         private void SetCameraTargets()
         {
@@ -185,7 +179,10 @@ namespace Complete
                 {
                     rankingManager.Rank(false);
                 }
-                
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.LoadLevel("TitleScene");
+                }
             }
             else
             {
