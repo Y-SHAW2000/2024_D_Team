@@ -151,8 +151,8 @@ public class Enemy : MonoBehaviour
         if(slider.value <= 0)
         {
             isDead = true;
-            //animator.SetBool("isDead",true);
-            //Destroy(this.gameObject, 5f);
+            animator.SetBool("isDead",true);
+            Destroy(this.gameObject, 5f);
         }
     }
 
