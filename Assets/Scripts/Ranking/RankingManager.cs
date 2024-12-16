@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System.IO;
+using static RankingManager;
 
 public class RankingManager : MonoBehaviour
 {
@@ -26,6 +28,46 @@ public class RankingManager : MonoBehaviour
 
         transform.GetComponent<RankingDialog>().ShowRanking(GetTop10Ranking(), GetCurrentPlayerStats());
 
+        //SaveRankings(RankingData);
+
+    }
+
+    [System.Serializable]
+    public class RankingData
+    {
+        public PlayerStats[] playerStats;
+    }
+
+    private string saveFilePath;
+
+    void Start()
+    {
+        saveFilePath = Path.Combine(Application.persistentDataPath, "rankings.json");
+
+        LoadRankings();
+    }
+
+    public void SaveRankings(RankingData data)
+    {
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(saveFilePath, json);
+        Debug.Log("Ranking data saved!");
+    }
+
+    public RankingData LoadRankings()
+    {
+        if (File.Exists(saveFilePath))
+        {
+            string json = File.ReadAllText(saveFilePath);
+            RankingData data = JsonUtility.FromJson<RankingData>(json);
+            Debug.Log("Ranking data loaded!");
+            return data;
+        }
+        else
+        {
+            Debug.Log("No ranking data found. Starting fresh.");
+            return new RankingData { playerStats = new PlayerStats[0] };
+        }
     }
 
     public List<PlayerStats> GetTop10Ranking()

@@ -1,3 +1,4 @@
+using Complete;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class HitPoint : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            //other.GetComponent<PlayerControllerForAgent>().PlayerDamaged(damage);
+            other.GetComponent<TankHealthForRaid>().TakeDamage(damage);
         }
     }
 }

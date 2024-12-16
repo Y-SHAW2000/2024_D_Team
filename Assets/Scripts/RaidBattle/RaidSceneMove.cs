@@ -26,7 +26,7 @@ public class RaidSceneMove : MonoBehaviour
     private void OnClicked()
     {
         UseStamina();
-        SceneManager.LoadScene(Scenenames.RaidBattleScene);
+        SceneManager.LoadScene("RaidBattle");
 
     }
     private void UseStamina()

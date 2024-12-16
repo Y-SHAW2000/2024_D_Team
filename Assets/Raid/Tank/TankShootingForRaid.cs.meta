@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6795418ebbfc04a429b358f15ae0ca6e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_Shell: {instanceID: 0}
+  - m_FireTransform: {instanceID: 0}
+  - m_AimSlider: {instanceID: 0}
+  - m_ShootingAudio: {instanceID: 0}
+  - m_ChargingClip: {instanceID: 0}
+  - m_FireClip: {instanceID: 0}
+  - MinePrefab: {fileID: 192454, guid: 27c8c6e038c093a42a9c493b1892f764, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

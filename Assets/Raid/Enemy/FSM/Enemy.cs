@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.AI;
@@ -25,7 +26,7 @@ public class Enemy : MonoBehaviour
     public float coolDown03;
 
     //public PlayerAgent playerAgent;
-    public Transform[] playerTransform;
+    public List<Transform> playerTransforms;
     public MeshCollider meshCollider;
     private NavMeshAgent agent;
     public Animator animator;
@@ -72,10 +73,17 @@ public class Enemy : MonoBehaviour
         patrolState = transform.gameObject.AddComponent<PatrolState>();
         attackState = transform.gameObject.AddComponent<AttackState>();
         meshCollider = GetComponent<MeshCollider>();
+
+
     }
 
     void Start()
     {
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            playerTransforms.Add(player.transform);
+        }
+
         currentSkillNumber = 0;
         isAttackedByPlayer = false;
         distance = 5f;
@@ -240,12 +248,14 @@ public class Enemy : MonoBehaviour
 
     private void AddAttackObj()
     {
-        if((Vector3.Distance(playerTransform.position, this.transform.position) <= distance || 
-            isAttackedByPlayer)
-            && attackList.Count == 0)
+        foreach(Transform player in playerTransforms)
         {
-            attackList.Add(playerTransform);
+            if ((Vector3.Distance(player.position, this.transform.position) <= distance || isAttackedByPlayer) && attackList.Count == 0)
+            {
+                attackList.Add(player);
+            }
         }
+
         
         
     }
